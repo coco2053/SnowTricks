@@ -49,9 +49,15 @@ class Trick
      */
     private $videos;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\TrickImage", mappedBy="trick")
+     */
+    private $trickImages;
+
     public function __construct()
     {
         $this->videos = new ArrayCollection();
+        $this->trickImages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -144,6 +150,37 @@ class Trick
             // set the owning side to null (unless already changed)
             if ($video->getTrick() === $this) {
                 $video->setTrick(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TrickImage[]
+     */
+    public function getTrickImages(): Collection
+    {
+        return $this->trickImages;
+    }
+
+    public function addTrickImage(TrickImage $trickImage): self
+    {
+        if (!$this->trickImages->contains($trickImage)) {
+            $this->trickImages[] = $trickImage;
+            $trickImage->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrickImage(TrickImage $trickImage): self
+    {
+        if ($this->trickImages->contains($trickImage)) {
+            $this->trickImages->removeElement($trickImage);
+            // set the owning side to null (unless already changed)
+            if ($trickImage->getTrick() === $this) {
+                $trickImage->setTrick(null);
             }
         }
 
