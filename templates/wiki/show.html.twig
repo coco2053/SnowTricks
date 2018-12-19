@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Les figures {% endblock %}
+{% block title %}{{ trick.name }} {% endblock %}
 
 {% block body %}
 <section class="trick">
-    {% for trick in tricks %}
+
     <article>
         <h2>{{ trick.name }}</h2>
         <div class="metadata">Ecrit le {{ trick.createdAt | date('d/m/Y') }} à {{ trick.createdAt | date('H:i') }} dans le groupe {{ trick.trickGroup.title }}</div>
@@ -18,9 +18,7 @@
              {% endfor %}
 
                 {{ trick.content | raw }}
-            <a href="{{ path('show', {'id': trick.id}) }}" class="btn btn-primary">Lire la suite</a>
         </div>
     </article>
 </section>
-{% endfor %}
 {% endblock %}

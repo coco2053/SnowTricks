@@ -16,8 +16,18 @@ class WikiController extends AbstractController
     {
         $tricks = $repo->findAll();
         return $this->render('wiki/index.html.twig', [
-            'controller_name' => 'WikiController',
             'tricks' => $tricks
+        ]);
+    }
+
+    /**
+     * @Route("/wiki/{id}", name="show")
+     */
+    public function show(Trick $trick)
+    {
+
+        return $this->render('wiki/show.html.twig', [
+            'trick' => $trick,
         ]);
     }
 }
