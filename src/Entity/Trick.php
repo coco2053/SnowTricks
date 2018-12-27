@@ -8,7 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrickRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
+
 class Trick
 {
     /**
@@ -45,12 +47,12 @@ class Trick
     private $trickGroup;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="trick", cascade={"persist"}))
+     * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="trick", cascade={"persist"})
      */
     private $videos;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\TrickImage", mappedBy="trick")
+     * @ORM\OneToMany(targetEntity="App\Entity\TrickImage", mappedBy="trick", cascade={"persist", "remove"})
      */
     private $trickImages;
 

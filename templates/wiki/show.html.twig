@@ -10,7 +10,7 @@
         <div class="metadata">Ecrit le {{ trick.createdAt | date('d/m/Y') }} à {{ trick.createdAt | date('H:i') }} dans le groupe {{ trick.trickGroup.title }}</div>
         <div class="content">
              {% for image in trick.trickImages %}
-                <img src="{{ image.url }}" alt="" style="width:20%">
+                <img src="{{ asset("uploads/images/")~image.url}}" alt="" style="width:20%">
              {% endfor %}
 
              {% for video in trick.videos %}

@@ -5,7 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TrickRepository;
 use App\Form\TrickType;
 use App\Entity\Trick;
@@ -38,26 +38,27 @@ class WikiController extends AbstractController
     /**
      * @Route("/add", name="add_trick")
      */
-    public function addEdit(Trick $trick = null, Request $request, ObjectManager $manager)
+    public function addEdit(Request $request, EntityManagerInterface $manager)
     {
-        if (!$trick) {
-            $trick = new Trick();
-        }
 
-        $form = $this->createForm(TrickType::class, $trick);
+        $form = $this->createForm(TrickType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+             $trick = $form->getData();
+
             if (!$trick->getId()) {
                 $trick->setCreatedAt(new \DateTime())
                       ->setUpdatedAt(new \DateTime());
             }
+            $trickImages = $trick->getTrickImages();
 
             // On recupere une liste de fichiers
-            $files = $request->files->get('trick') ['trickImages'];
+            //$files = $request->files->get('trick') ['trickImages'];
 
             // On boucle dans les images
-            foreach ($files as $file) {
+            foreach ($trickImages as $trickImage) {
+                $file = $trickImage->getFile();
                 $fileName = md5(uniqid()) . '.' . $file->guessExtension();
 
                 // On transfere le fichier vers le repertoire d'upload
@@ -66,12 +67,9 @@ class WikiController extends AbstractController
                     $fileName
                 );
 
-                $trickImage = new TrickImage;
-                $trickImage->setUrl($fileName)
-                           ->setTrick($trick);
-                $manager->persist($trickImage);
+                $trickImage->setUrl($fileName);
 
-
+                //$manager->persist($trickImage);
                 $trick->addTrickImage($trickImage);
             }
 
