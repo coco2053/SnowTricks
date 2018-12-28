@@ -1,11 +1,24 @@
 <?php
-namespace App\Service;
+namespace App\EventListener;
+
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use App\Entity\Trick;
 
 class ImageHandler
 {
-    public function handleImages()
+    public function prePersist(LifecycleEventArgs $args)
     {
-        $trickImages = $this->getTrickImages();
+
+        $entity = $args->getObject();
+
+        // only act on some "Trick" entity
+        if (!$entity instanceof Trick) {
+            return;
+        }
+
+        $entityManager = $args->getObjectManager();
+
+        $trickImages = $entity->getTrickImages();
 
         // On recupere une liste de fichiers
         //$files = $request->files->get('trick') ['trickImages'];

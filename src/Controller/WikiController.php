@@ -38,7 +38,7 @@ class WikiController extends AbstractController
     /**
      * @Route("/add", name="add_trick")
      */
-    public function addEdit(Request $request, EntityManagerInterface $manager)
+    public function add(Request $request, EntityManagerInterface $manager)
     {
 
         $form = $this->createForm(TrickType::class);
@@ -51,10 +51,7 @@ class WikiController extends AbstractController
                 $trick->setCreatedAt(new \DateTime())
                       ->setUpdatedAt(new \DateTime());
             }
-            $trickImages = $trick->getTrickImages();
-
-            // On recupere une liste de fichiers
-            //$files = $request->files->get('trick') ['trickImages'];
+            /*$trickImages = $trick->getTrickImages();
 
             // On boucle dans les images
             foreach ($trickImages as $trickImage) {
@@ -69,14 +66,30 @@ class WikiController extends AbstractController
 
                 $trickImage->setUrl($fileName);
 
-                //$manager->persist($trickImage);
                 $trick->addTrickImage($trickImage);
-            }
+            }*/
 
             $manager->persist($trick);
             $manager->flush();
 
             return $this->redirectToRoute('show', ['id' => $trick->getId()]);
+        }
+
+        return $this->render('wiki/add.html.twig', [
+            'formTrick' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("wiki/{id}/edit", name="edit_trick")
+     */
+    public function edit(Trick $trick, Request $request, EntityManagerInterface $manager)
+    {
+        $form = $this->createForm(TrickType::class, $trick);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+             $trick = $form->getData();
         }
 
         return $this->render('wiki/add.html.twig', [
