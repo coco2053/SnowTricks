@@ -3,12 +3,17 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrickRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(
+ * fields= {"name"},
+ * message= "Une figure portant ce nom existe déjà !"
+ * )
  */
 
 class Trick
@@ -60,6 +65,14 @@ class Trick
     {
         $this->videos = new ArrayCollection();
         $this->trickImages = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PreFlush
+     */
+    public function updateDate()
+    {
+        $this->setUpdatedAt(new \DateTime());
     }
 
     public function getId(): ?int

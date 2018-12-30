@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrickImageRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class TrickImage
 {
@@ -25,14 +27,49 @@ class TrickImage
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+
     private $alt;
 
+    private $path;
+
+    /**
+     * @Assert\Image(
+     *     mimeTypes={"image/png" ,"images/jpg","image/jpeg"},
+     *     mimeTypesMessage = "Svp inserer une image valide (png,jpg,jpeg)")
+     */
     private $file;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="trickImages")
      */
     private $trick;
+
+    /**
+     * @ORM\PreFlush
+     */
+    public function handle()
+    {
+        if ($this->file === null) {
+            return;
+        }
+
+        if ($this->id) {
+            try {
+                unlink($this->path.'/'.$this->url);
+            }
+            catch (exception $e) {
+                return;
+            }
+        }
+        $name = $this->createName();
+        $this->setUrl($name);
+        $this->file->move($this->path, $name);
+    }
+
+    private function createName(): string
+    {
+        return md5(uniqid()). $this->file->getClientOriginalName();
+    }
 
     public function getTrick(): ?Trick
     {
@@ -59,6 +96,18 @@ class TrickImage
     public function setUrl(string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function getPath(): ?string
+    {
+        return $this->path;
+    }
+
+    public function setPath(?string $path): self
+    {
+        $this->path = $path;
 
         return $this;
     }

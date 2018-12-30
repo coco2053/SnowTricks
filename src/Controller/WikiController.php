@@ -48,26 +48,15 @@ class WikiController extends AbstractController
              $trick = $form->getData();
 
             if (!$trick->getId()) {
-                $trick->setCreatedAt(new \DateTime())
-                      ->setUpdatedAt(new \DateTime());
+                $trick->setCreatedAt(new \DateTime());
             }
-            /*$trickImages = $trick->getTrickImages();
+
+            $trickImages = $trick->getTrickImages();
 
             // On boucle dans les images
             foreach ($trickImages as $trickImage) {
-                $file = $trickImage->getFile();
-                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-
-                // On transfere le fichier vers le repertoire d'upload
-                $file->move(
-                    $this->getParameter('images_directory'),
-                    $fileName
-                );
-
-                $trickImage->setUrl($fileName);
-
-                $trick->addTrickImage($trickImage);
-            }*/
+                $trickImage->setPath($this->getParameter('images_directory'));
+            }
 
             $manager->persist($trick);
             $manager->flush();
@@ -89,10 +78,22 @@ class WikiController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-             $trick = $form->getData();
+            $trick = $form->getData();
+
+            $trickImages = $trick->getTrickImages();
+
+            // On boucle dans les images
+            foreach ($trickImages as $trickImage) {
+                $trickImage->setPath($this->getParameter('images_directory'));
+            }
+
+            $manager->persist($trick);
+            $manager->flush();
+
+             return $this->redirectToRoute('show', ['id' => $trick->getId()]);
         }
 
-        return $this->render('wiki/add.html.twig', [
+        return $this->render('wiki/edit.html.twig', [
             'formTrick' => $form->createView()
         ]);
     }
