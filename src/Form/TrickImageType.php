@@ -14,7 +14,6 @@ class TrickImageType extends AbstractType
     {
         $builder
             ->add('file', FileType::class, [
-            //'multiple' => true
             ])
         ;
     }

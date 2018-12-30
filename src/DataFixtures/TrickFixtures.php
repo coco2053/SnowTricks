@@ -19,8 +19,7 @@ class TrickFixtures extends Fixture
         $h = 0;
 
         //Create 3 fake Trick Groups
-        for($i = 1; $i <= 3; $i++) {
-
+        for ($i = 1; $i <= 3; $i++) {
             $group = new TrickGroup();
             $group->setTitle($faker->sentence());
 
@@ -28,7 +27,7 @@ class TrickFixtures extends Fixture
 
 
             //Create 4 tricks
-            for($j = 1; $j <= 4; $j++) {
+            for ($j = 1; $j <= 4; $j++) {
                 $h++;
                 $trick = new Trick();
 
@@ -45,7 +44,7 @@ class TrickFixtures extends Fixture
                 $manager->persist($trick);
 
                 // Create 4 TrickImage
-                for($k = 1; $k <= 4; $k++) {
+                for ($k = 1; $k <= 4; $k++) {
                     $image = new TrickImage();
                     $image->setUrl($faker->imageUrl());
                     $image->setTrick($trick);
