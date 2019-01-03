@@ -51,13 +51,6 @@ class WikiController extends AbstractController
                 $trick->setCreatedAt(new \DateTime());
             }
 
-            $trickImages = $trick->getTrickImages();
-
-            // On boucle dans les images
-            foreach ($trickImages as $trickImage) {
-                $trickImage->setPath($this->getParameter('images_directory'));
-            }
-
             $manager->persist($trick);
             $manager->flush();
 
@@ -78,16 +71,6 @@ class WikiController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $trick = $form->getData();
-
-            $trickImages = $trick->getTrickImages();
-
-            // On boucle dans les images
-            foreach ($trickImages as $trickImage) {
-                $trickImage->setPath($this->getParameter('images_directory'));
-            }
-
-            $manager->persist($trick);
             $manager->flush();
 
              return $this->redirectToRoute('show', ['id' => $trick->getId()]);
@@ -96,5 +79,25 @@ class WikiController extends AbstractController
         return $this->render('wiki/edit.html.twig', [
             'formTrick' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/delete/{id}", name="delete_trick")
+     */
+    public function delete(Trick $trick, EntityManagerInterface $manager)
+    {
+        /*
+        $trickImages = $trick->getTrickImages();
+        // On boucle dans les images
+        foreach ($trickImages as $trickImage) {
+            $manager->remove($trickImage);
+        }*/
+
+        $manager->remove($trick);
+
+        $manager->flush();
+
+
+        return $this->redirectToRoute('show_tricks');
     }
 }

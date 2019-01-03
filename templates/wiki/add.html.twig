@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {#{% form_theme formArticle 'bootstrap_4_layout.html.twig' %}#}
-
+{% block title %}Ajout{% endblock %}
 {% block body %}
 
     <h1>Page de creation</h1>
@@ -30,14 +30,15 @@
 
     {{ form_end(formTrick) }}
 
-    {# On charge la bibliothèque jQuery. #}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+{% endblock %}
 
+{% block javascripts %}
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     {# On charge le script pour les videos. #}
     <script src="{{ asset("js/addVideo.js") }}"></script>
     {# On charge le script pour les images. #}
     <script src="{{ asset("js/addImage.js") }}"></script>
-
 
 
 {% endblock %}

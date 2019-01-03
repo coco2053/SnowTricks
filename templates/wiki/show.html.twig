@@ -3,10 +3,13 @@
 {% block title %}{{ trick.name }} {% endblock %}
 
 {% block body %}
-<section class="trick">
+    <!-- Page Content -->
+    <div class="container">
 
-    <article>
-        <h2>{{ trick.name }}</h2>
+      <!-- Page Heading -->
+      <h1 class="my-4">{{ trick.name }}
+      </h1>
+      <div class="row">
         <div class="metadata">Ecrit le {{ trick.createdAt | date('d/m/Y') }} à {{ trick.createdAt | date('H:i') }} dans le groupe {{ trick.trickGroup.title }}</div>
         <div class="content">
              {% for image in trick.trickImages %}
@@ -18,7 +21,7 @@
              {% endfor %}
 
                 {{ trick.content | raw }}
+            </div>
         </div>
-    </article>
-</section>
+    </div>
 {% endblock %}

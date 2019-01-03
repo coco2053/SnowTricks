@@ -30,7 +30,7 @@ class TrickImage
 
     private $alt;
 
-    private $path;
+    private $path = __DIR__ .'/../../public/uploads/images';
 
     /**
      * @Assert\Image(
@@ -54,10 +54,9 @@ class TrickImage
         }
 
         if ($this->id) {
-            try {
+            if (file_exists($this->path.'/'.$this->url)) {
                 unlink($this->path.'/'.$this->url);
-            }
-            catch (exception $e) {
+            } else {
                 return;
             }
         }
@@ -65,6 +64,22 @@ class TrickImage
         $this->setUrl($name);
         $this->file->move($this->path, $name);
     }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function handleRemove()
+    {
+
+        if ($this->id) {
+            if (file_exists($this->path.'/'.$this->url)) {
+                unlink($this->path.'/'.$this->url);
+            } else {
+                return;
+            }
+        }
+    }
+
 
     private function createName(): string
     {
