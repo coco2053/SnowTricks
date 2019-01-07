@@ -6,29 +6,23 @@
 
     <h1>Page de creation</h1>
 
-    {{ form_start(formTrick) }}
+    {{ form_start(form) }}
 
-    {{ form_row(formTrick.name, {'attr': {'placeholder': "Nom de la figure"}}) }}
+    {{ form_row(form.name, {'label': 'Nom de la figure', 'attr': {'placeholder': 'Entrez le nom de la figure'}}) }}
 
-    {{ form_row(formTrick.trickGroup) }}
+    {{ form_row(form.trickGroup, {'label': 'Groupe'}) }}
 
-    {{ form_row(formTrick.content, {'attr': {'placeholder': "Description de la figure"}}) }}
+    {{ form_row(form.content, {'label': 'Description', 'attr': {'placeholder': 'Décrivez comment réaliser la figure'}}) }}
 
-    {{ form_row(formTrick.trickImages) }}
+    {{ form_row(form.trickImages, {'label': 'Images'}) }}
     <a href="#" id="add_image" class="btn btn-default">Ajouter une image</a>
 
-    {{ form_row(formTrick.videos) }}
+    {{ form_row(form.videos, {'label': 'Vidéos'}) }}
     <a href="#" id="add_video" class="btn btn-default">Ajouter une vidéo</a>
 
-    <button type="submit" class="btn btn-success">
-       {# {% if editMode %}
-            Enregistrer #}
-        {#{% else %}#}
-            Ajouter la figure
-        {#{% endif %}#}
-    </button>
+    <button type="submit" class="btn btn-success">Ajouter la figure</button>
 
-    {{ form_end(formTrick) }}
+    {{ form_end(form) }}
 
 {% endblock %}
 

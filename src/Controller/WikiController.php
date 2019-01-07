@@ -47,10 +47,6 @@ class WikiController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
              $trick = $form->getData();
 
-            if (!$trick->getId()) {
-                $trick->setCreatedAt(new \DateTime());
-            }
-
             $manager->persist($trick);
             $manager->flush();
 
@@ -58,7 +54,7 @@ class WikiController extends AbstractController
         }
 
         return $this->render('wiki/add.html.twig', [
-            'formTrick' => $form->createView()
+            'form' => $form->createView()
         ]);
     }
 
@@ -77,7 +73,7 @@ class WikiController extends AbstractController
         }
 
         return $this->render('wiki/edit.html.twig', [
-            'formTrick' => $form->createView()
+            'form' => $form->createView()
         ]);
     }
 

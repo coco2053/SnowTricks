@@ -7,38 +7,39 @@
 
     <h1>Page de modification</h1>
 
-    {{ form_start(formTrick) }}
+   {{ form_start(form) }}
+   {{ form_widget(form.name) }}
 
-    {{ form_row(formTrick.name, {'attr': {'placeholder': "Nom de la figure"}}) }}
+    {{ form_row(form.name, {'attr': {'placeholder': "Nom de la figure"}}) }}
 
-    {{ form_row(formTrick.trickGroup) }}
+    {{ form_row(form.trickGroup) }}
 
-    {{ form_row(formTrick.content, {'attr': {'placeholder': "Description de la figure"}}) }}
+    {{ form_row(form.content, {'attr': {'placeholder': "Description de la figure"}}) }}
 
-    {#<ul class="tags" data-prototype="{{ form_widget(formTrick.trickImages.vars.prototype)|e}}">
-    {% for image in formTrick.trickImages %}
+    {#<ul class="tags" data-prototype="{{ form_widget(form.trickImages.vars.prototype)|e}}">
+    {% for image in form.trickImages %}
         <li>{{ form_row(image.file) }} </li>
     {% endfor %}
-    </ul>#}
+    </ul>
 
-    {{ form_row(formTrick.trickImages) }}
-    <a href="#" id="add_image" class="btn btn-default">Ajouter une image</a>
-    {#{% for image in formTrick.trickImages %}
+    {{ form_row(form.trickImages) }}
+    <a href="#" id="add_image" class="btn btn-default">Ajouter une image</a>#}
+    {% for image in form.trickImages %}
         <img src="{{ asset("uploads/images/")~image.vars.value.url}}" alt="" style="width:20%">
-        {{ form_row(image) }}
-    {% endfor %}
-    <a href="#" id="add_image" class="btn btn-default">Ajouter une image</a> #}
+        {#{{ form_row(image) }}#}
+    {% endfor %} {#}
+    <a href="#" id="add_image" class="btn btn-default">Ajouter une image</a>
 
-    {{ form_row(formTrick.videos) }}
+    {{ form_row(form.videos) }}
     <a href="#" id="add_video" class="btn btn-default">Ajouter une vidéo</a>
 
     <button type="submit" class="btn btn-success">
             Modifier la figure
     </button>
 
-    {# dump formTrick.trickImages.vars.value.url #}
+    {# dump form.trickImages.vars.value.url#}
 
-    {{ form_end(formTrick) }}
+    {{ form_end(form, {'render_rest': false}) }}
 
 {% endblock %}
 

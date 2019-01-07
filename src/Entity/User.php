@@ -42,8 +42,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min="3", minMessage="Votre mot de passe doit contenir au moins 3 caracteres !")
      */
-
     private $username;
 
     /**
@@ -58,9 +58,15 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\AvatarImage", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $avatarImage;
+
+    public function __construct()
+    {
+        $this->setRegisteredAt(new \DateTime());
+        $this->setIsActive(false);
+    }
 
     public function getId(): ?int
     {
@@ -103,12 +109,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getIsActicve(): ?bool
+    public function getIsActive(): ?bool
     {
         return $this->isActicve;
     }
 
-    public function setIsActicve(bool $isActicve): self
+    public function setIsActive(bool $isActicve): self
     {
         $this->isActicve = $isActicve;
 

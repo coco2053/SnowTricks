@@ -67,6 +67,7 @@ class Trick
     {
         $this->videos = new ArrayCollection();
         $this->trickImages = new ArrayCollection();
+        $this->setCreatedAt(new \DateTime());
     }
 
     /**

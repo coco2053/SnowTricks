@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AvatarImageRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class AvatarImage
 {
@@ -22,9 +25,59 @@ class AvatarImage
     private $url;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $alt;
+
+    private $path = __DIR__ .'/../../public/uploads/images';
+
+    /**
+     * @Assert\Image(
+     *     mimeTypes={"image/png" ,"images/jpg","image/jpeg"},
+     *     mimeTypesMessage = "Svp inserer une image valide (png,jpg,jpeg)")
+     */
+    private $file;
+
+    /**
+     * @ORM\PreFlush
+     */
+    public function handle()
+    {
+        if ($this->file === null) {
+            return;
+        }
+
+        if ($this->id) {
+            if (file_exists($this->path.'/'.$this->url)) {
+                unlink($this->path.'/'.$this->url);
+            } else {
+                return;
+            }
+        }
+        $name = $this->createName();
+        $this->setUrl($name);
+        $this->file->move($this->path, $name);
+    }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function handleRemove()
+    {
+
+        if ($this->id) {
+            if (file_exists($this->path.'/'.$this->url)) {
+                unlink($this->path.'/'.$this->url);
+            } else {
+                return;
+            }
+        }
+    }
+
+    private function createName(): string
+    {
+        return md5(uniqid()). $this->file->getClientOriginalName();
+    }
 
     public function getId(): ?int
     {
@@ -53,5 +106,27 @@ class AvatarImage
         $this->alt = $alt;
 
         return $this;
+    }
+
+    public function getPath(): ?string
+    {
+        return $this->path;
+    }
+
+    public function setPath(?string $path): self
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
     }
 }
