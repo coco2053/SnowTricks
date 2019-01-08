@@ -49,12 +49,17 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isActicve;
+    private $isActicve = false;
 
     /**
      * @ORM\Column(type="datetime")
      */
     private $registeredAt;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $confirmationToken = null;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\AvatarImage", cascade={"persist", "remove"})
@@ -65,7 +70,6 @@ class User implements UserInterface
     public function __construct()
     {
         $this->setRegisteredAt(new \DateTime());
-        $this->setIsActive(false);
     }
 
     public function getId(): ?int
@@ -131,6 +135,16 @@ class User implements UserInterface
         $this->registeredAt = $registeredAt;
 
         return $this;
+    }
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    public function setConfirmationToken($token)
+    {
+        $this->confirmationToken = $token;
     }
 
     public function getAvatarImage(): ?AvatarImage
