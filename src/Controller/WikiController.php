@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,6 +20,7 @@ class WikiController extends AbstractController
     public function showTricks(TrickRepository $repo)
     {
         $tricks = $repo->findAll();
+
         return $this->render('wiki/index.html.twig', [
             'tricks' => $tricks
         ]);
@@ -50,6 +52,11 @@ class WikiController extends AbstractController
             $manager->persist($trick);
             $manager->flush();
 
+            $this->addFlash(
+                'notice',
+                'Votre article a bien été ajouté !'
+            );
+
             return $this->redirectToRoute('show', ['id' => $trick->getId()]);
         }
 
@@ -69,6 +76,11 @@ class WikiController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $manager->flush();
 
+            $this->addFlash(
+                'notice',
+                'L\'article a bien été modifié !'
+            );
+
              return $this->redirectToRoute('show', ['id' => $trick->getId()]);
         }
 
@@ -82,16 +94,15 @@ class WikiController extends AbstractController
      */
     public function delete(Trick $trick, EntityManagerInterface $manager)
     {
-        /*
-        $trickImages = $trick->getTrickImages();
-        // On boucle dans les images
-        foreach ($trickImages as $trickImage) {
-            $manager->remove($trickImage);
-        }*/
 
         $manager->remove($trick);
 
         $manager->flush();
+
+            $this->addFlash(
+                'notice',
+                'Article supprimé !'
+            );
 
 
         return $this->redirectToRoute('show_tricks');
