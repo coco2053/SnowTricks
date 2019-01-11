@@ -28,11 +28,13 @@
                     <a href="{{ path('show', {'id': trick.id}) }}">{{ trick.name }}</a>
                   </h4>
 
-                  <a class="btn btn-danger"
-                       href="{{ path('delete_trick', {'id': trick.id}) }}" onclick="return confirm('Etes-vous sûr ?');">Supprimer</a>
+                  {% if app.user %}
+                    <a class="btn btn-danger"
+                         href="{{ path('delete_trick', {'id': trick.id}) }}" onclick="return confirm('Etes-vous sûr ?');">Supprimer</a>
 
-                  <a class="btn btn-danger"
-                       href="{{ path('edit_trick', {'id': trick.id}) }}">Modifier</a>
+                    <a class="btn btn-danger"
+                         href="{{ path('edit_trick', {'id': trick.id}) }}">Modifier</a>
+                  {% endif %}
                 </div>
               </div>
             </div>

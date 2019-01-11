@@ -58,8 +58,8 @@ class AvatarImage
 
         $name = $this->createName();
         $this->setUrl($name);
-        $width = 64;
-        $height = 64;
+        $width = 128;
+        $height = 128;
         $size = getimagesize($this->file);
         $output = imagecreatetruecolor($width, $height);
         $ratio = min($size[0]/$width, $size[1]/$height);

@@ -21,14 +21,29 @@
             <li class="nav-item">
               <a class="nav-link" href="{{ path('show_tricks') }}">Les figures</a>
             </li>
+            {% if not app.user %}
             <li class="nav-item">
               <a class="nav-link" href="{{ path('security_login') }}">Se connecter</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ path('security_registration') }}">S'incrire</a>
             </li>
+              {% else %}
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ path('security_logout') }}" class="nav-link">Déconnexion</a>
+              </li>
+            {% endif %}
           </ul>
         </div>
+        {% if app.user %}
+          <div class='user-profile'>
+            {{ app.user.getUsername }}
+            {% if app.user.getAvatarImage %}
+              <img src="{{asset('/uploads/images/'~ app.user.getAvatarImage.url)}}" style="width:30%"/>
+              {% else %}
+              <img src="{{asset('/images/avatar.png')}}" style="width:30%"/>
+            {% endif %}
+        {% endif %}
       </div>
     </nav>
     <!-- Modal -->
