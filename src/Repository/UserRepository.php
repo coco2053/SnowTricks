@@ -19,10 +19,19 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function checkRegistrationToken($token):? User
+    public function checkConfirmationToken($token):? User
     {
         return  $this->createQueryBuilder('user')
             ->where('user.confirmationToken = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function checkPasswordToken($token):? User
+    {
+        return  $this->createQueryBuilder('user')
+            ->where('user.passwordToken = :token')
             ->setParameter('token', $token)
             ->getQuery()
             ->getOneOrNullResult();

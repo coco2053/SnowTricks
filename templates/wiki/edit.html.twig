@@ -18,7 +18,9 @@
    <div id="images" class="row" data-index="{{ form.trickImages|length > 0 ? form.trickImages|last.vars.name+1 : 0 }}" data-prototype="{{ include("theme/form_image.html.twig", { form: form.trickImages.vars.prototype })|e("html_attr") }}">
         {% for image in form.trickImages %}
             {{ include("theme/form_image.html.twig", { form: image }) }}
+            <div class="del-image-{{image.vars.name}}">
             <img src="{{ asset("uploads/images/")~image.vars.value.url}}" alt="" style="width:20%">
+        </div>
         {% endfor %}
     </div>
 

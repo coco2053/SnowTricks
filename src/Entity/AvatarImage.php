@@ -33,6 +33,7 @@ class AvatarImage
 
     /**
      * @Assert\Image(
+     *     maxSize = "1024k",
      *     mimeTypes={"image/png" ,"images/jpg","image/jpeg"},
      *     mimeTypesMessage = "Svp inserer une image valide (png,jpg,jpeg)")
      */
@@ -54,9 +55,28 @@ class AvatarImage
                 return;
             }
         }
+
         $name = $this->createName();
         $this->setUrl($name);
-        $this->file->move($this->path, $name);
+        $width = 64;
+        $height = 64;
+        $size = getimagesize($this->file);
+        $output = imagecreatetruecolor($width, $height);
+        $ratio = min($size[0]/$width, $size[1]/$height);
+        $deltax = $size[0]-($ratio * $width);
+        $deltay = $size[1]-($ratio * $height);
+
+        if ($this->file-> getClientOriginalExtension() == 'jpeg' or $this->file-> getClientOriginalExtension() == 'jpg') {
+            $image = imagecreatefromjpeg($this->file);
+            imagecopyresampled($output, $image, 0, 0, $deltax/2, $deltay/2, $width, $height, $size[0]-$deltax, $size[1]-$deltay);
+            imagejpeg($output, $this->path.'/'.$this->url, 100);
+        }
+
+        if ($this->file-> getClientOriginalExtension() == 'png') {
+            $image = imagecreatefrompng($this->file);
+            imagecopyresampled($output, $image, 0, 0, $deltax/2, $deltay/2, $width, $height, $size[0]-$deltax, $size[1]-$deltay);
+            imagepng($output, $this->path.'/'.$this->url, 3);
+        }
     }
 
     /**

@@ -34,6 +34,7 @@ class TrickImage
 
     /**
      * @Assert\Image(
+     *     maxSize = "1024k",
      *     mimeTypes={"image/png" ,"images/jpg","image/jpeg"},
      *     mimeTypesMessage = "Svp inserer une image valide (png,jpg,jpeg)")
      */

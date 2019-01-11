@@ -62,6 +62,11 @@ class User implements UserInterface
     private $confirmationToken = null;
 
     /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $passwordToken = null;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\AvatarImage", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=true)
      */
@@ -145,6 +150,16 @@ class User implements UserInterface
     public function setConfirmationToken($token)
     {
         $this->confirmationToken = $token;
+    }
+
+    public function getPasswordToken(): ?string
+    {
+        return $this->passwordToken;
+    }
+
+    public function setPasswordToken($token)
+    {
+        $this->passwordToken = $token;
     }
 
     public function getAvatarImage(): ?AvatarImage

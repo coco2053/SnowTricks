@@ -1,4 +1,3 @@
-
 security:
     encoders:
         App\Entity\user:
@@ -23,10 +22,20 @@ security:
             form_login:
                 login_path: security_login
                 check_path: security_login
+                username_parameter: email
+                password_parameter: password
 
             logout:
                 path: security_logout
                 target: show_tricks
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
 
             # activate different ways to authenticate
 
