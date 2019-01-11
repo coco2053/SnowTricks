@@ -7,10 +7,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\TrickImageRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\AvatarImageRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class TrickImage
+class AvatarImage
 {
     /**
      * @ORM\Id()
@@ -27,7 +27,6 @@ class TrickImage
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-
     private $alt;
 
     private $path = __DIR__ .'/../../public/uploads/images';
@@ -39,11 +38,6 @@ class TrickImage
      *     mimeTypesMessage = "Svp inserer une image valide (png,jpg,jpeg)")
      */
     private $file;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="trickImages")
-     */
-    private $trick;
 
     /**
      * @ORM\PreFlush
@@ -61,9 +55,28 @@ class TrickImage
                 return;
             }
         }
+
         $name = $this->createName();
         $this->setUrl($name);
-        $this->file->move($this->path, $name);
+        $width = 128;
+        $height = 128;
+        $size = getimagesize($this->file);
+        $output = imagecreatetruecolor($width, $height);
+        $ratio = min($size[0]/$width, $size[1]/$height);
+        $deltax = $size[0]-($ratio * $width);
+        $deltay = $size[1]-($ratio * $height);
+
+        if ($this->file-> getClientOriginalExtension() == 'jpeg' or $this->file-> getClientOriginalExtension() == 'jpg') {
+            $image = imagecreatefromjpeg($this->file);
+            imagecopyresampled($output, $image, 0, 0, $deltax/2, $deltay/2, $width, $height, $size[0]-$deltax, $size[1]-$deltay);
+            imagejpeg($output, $this->path.'/'.$this->url, 100);
+        }
+
+        if ($this->file-> getClientOriginalExtension() == 'png') {
+            $image = imagecreatefrompng($this->file);
+            imagecopyresampled($output, $image, 0, 0, $deltax/2, $deltay/2, $width, $height, $size[0]-$deltax, $size[1]-$deltay);
+            imagepng($output, $this->path.'/'.$this->url, 3);
+        }
     }
 
     /**
@@ -81,22 +94,9 @@ class TrickImage
         }
     }
 
-
     private function createName(): string
     {
         return md5(uniqid()). $this->file->getClientOriginalName();
-    }
-
-    public function getTrick(): ?Trick
-    {
-        return $this->trick;
-    }
-
-    public function setTrick(?Trick $trick): self
-    {
-        $this->trick = $trick;
-
-        return $this;
     }
 
     public function getId(): ?int
@@ -116,6 +116,18 @@ class TrickImage
         return $this;
     }
 
+    public function getAlt(): ?string
+    {
+        return $this->alt;
+    }
+
+    public function setAlt(string $alt): self
+    {
+        $this->alt = $alt;
+
+        return $this;
+    }
+
     public function getPath(): ?string
     {
         return $this->path;
@@ -124,18 +136,6 @@ class TrickImage
     public function setPath(?string $path): self
     {
         $this->path = $path;
-
-        return $this;
-    }
-
-    public function getAlt(): ?string
-    {
-        return $this->alt;
-    }
-
-    public function setAlt(?string $alt): self
-    {
-        $this->alt = $alt;
 
         return $this;
     }

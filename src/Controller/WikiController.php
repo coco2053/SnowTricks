@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,6 +20,7 @@ class WikiController extends AbstractController
     public function showTricks(TrickRepository $repo)
     {
         $tricks = $repo->findAll();
+
         return $this->render('wiki/index.html.twig', [
             'tricks' => $tricks
         ]);
@@ -36,10 +38,12 @@ class WikiController extends AbstractController
     }
 
     /**
-     * @Route("/add", name="add_trick")
+     * @Route("/ajouter", name="add_trick")
      */
     public function add(Request $request, EntityManagerInterface $manager)
     {
+
+        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Vous devez être connecté pour acceder à cette page !');
 
         $form = $this->createForm(TrickType::class);
         $form->handleRequest($request);
@@ -47,55 +51,64 @@ class WikiController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
              $trick = $form->getData();
 
-            if (!$trick->getId()) {
-                $trick->setCreatedAt(new \DateTime());
-            }
-
             $manager->persist($trick);
             $manager->flush();
+
+            $this->addFlash(
+                'notice',
+                'Votre article a bien été ajouté !'
+            );
 
             return $this->redirectToRoute('show', ['id' => $trick->getId()]);
         }
 
         return $this->render('wiki/add.html.twig', [
-            'formTrick' => $form->createView()
+            'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("wiki/{id}/edit", name="edit_trick")
+     * @Route("wiki/{id}/modifier", name="edit_trick")
      */
     public function edit(Trick $trick, Request $request, EntityManagerInterface $manager)
     {
+
+        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Vous devez être connecté pour acceder à cette page !');
+
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $manager->flush();
 
+            $this->addFlash(
+                'notice',
+                'L\'article a bien été modifié !'
+            );
+
              return $this->redirectToRoute('show', ['id' => $trick->getId()]);
         }
 
         return $this->render('wiki/edit.html.twig', [
-            'formTrick' => $form->createView()
+            'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/delete/{id}", name="delete_trick")
+     * @Route("/supprimer/{id}", name="delete_trick")
      */
     public function delete(Trick $trick, EntityManagerInterface $manager)
     {
-        /*
-        $trickImages = $trick->getTrickImages();
-        // On boucle dans les images
-        foreach ($trickImages as $trickImage) {
-            $manager->remove($trickImage);
-        }*/
+        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Vous devez être connecté pour acceder à cette page !');
 
         $manager->remove($trick);
 
         $manager->flush();
+
+            $this->addFlash(
+                'notice',
+                'Article supprimé !'
+            );
 
 
         return $this->redirectToRoute('show_tricks');

@@ -6,39 +6,45 @@
 
     <h1>Page de creation</h1>
 
-    {{ form_start(formTrick) }}
+    {{ form_start(form) }}
+    {{ form_row(form._token) }}
 
-    {{ form_row(formTrick.name, {'attr': {'placeholder': "Nom de la figure"}}) }}
+    {{ form_row(form.name, {'label': 'Nom de la figure', 'attr': {'placeholder': 'Entrez le nom de la figure'}}) }}
 
-    {{ form_row(formTrick.trickGroup) }}
+    {{ form_row(form.trickGroup, {'label': 'Groupe'}) }}
 
-    {{ form_row(formTrick.content, {'attr': {'placeholder': "Description de la figure"}}) }}
+    {{ form_row(form.content, {'label': 'Description', 'attr': {'placeholder': 'Décrivez comment réaliser la figure'}}) }}
 
-    {{ form_row(formTrick.trickImages) }}
-    <a href="#" id="add_image" class="btn btn-default">Ajouter une image</a>
+<p><button type="button" class="btn btn-sm btn-primary btn-add" data-rel="#images">Ajouter</button></p>
+   <div id="images" class="row" data-index="{{ form.trickImages|length > 0 ? form.trickImages|last.vars.name+1 : 0 }}" data-prototype="{{ include("theme/form_image.html.twig", { form: form.trickImages.vars.prototype })|e("html_attr") }}">
+        {% for image in form.trickImages %}
+            {{ include("theme/form_image.html.twig", { form: image }) }}
 
-    {{ form_row(formTrick.videos) }}
-    <a href="#" id="add_video" class="btn btn-default">Ajouter une vidéo</a>
+        {% endfor %}
+    </div>
 
-    <button type="submit" class="btn btn-success">
-       {# {% if editMode %}
-            Enregistrer #}
-        {#{% else %}#}
-            Ajouter la figure
-        {#{% endif %}#}
-    </button>
+    <p><button type="button" class="btn btn-sm btn-primary btn-add" data-rel="#videos">Ajouter</button></p>
+    <div id="videos" class="row" data-index="{{ form.videos|length > 0 ? form.videos|last.vars.name+1 : 0 }}" data-prototype="{{ include("theme/form_video.html.twig", { form: form.videos.vars.prototype })|e("html_attr") }}">
+        {% for video in form.videos %}
+            {{ include("theme/form_video.html.twig", { form: video }) }}
+        {% endfor %}
+    </div>
+        <br>
 
-    {{ form_end(formTrick) }}
+    <button type="submit" class="btn btn-success">Ajouter la figure</button>
+
+    {{ form_end(form, {'render_rest': false}) }}
 
 {% endblock %}
 
 {% block javascripts %}
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    {# On charge le script pour les videos. #}
+    {# On charge le script pour les videos.
     <script src="{{ asset("js/addVideo.js") }}"></script>
-    {# On charge le script pour les images. #}
-    <script src="{{ asset("js/addImage.js") }}"></script>
+     On charge le script pour les images.
+    <script src="{{ asset("js/addImage.js") }}"></script>#}
+    <script src="{{ asset("js/jsForm.js") }}"></script>
 
 
 {% endblock %}

@@ -1,13 +1,41 @@
 security:
+    encoders:
+        App\Entity\user:
+            algorithm: bcrypt
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         in_memory: { memory: ~ }
+        in_database:
+            entity:
+                class: App\Entity\User
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             anonymous: true
+
+            provider: in_database
+
+            form_login:
+                login_path: security_login
+                check_path: security_login
+                username_parameter: email
+                password_parameter: password
+
+            logout:
+                path: security_logout
+                target: show_tricks
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
 
             # activate different ways to authenticate
 
@@ -20,5 +48,5 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/ajouter, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }
