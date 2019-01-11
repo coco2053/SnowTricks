@@ -38,10 +38,12 @@ class WikiController extends AbstractController
     }
 
     /**
-     * @Route("/add", name="add_trick")
+     * @Route("/ajouter", name="add_trick")
      */
     public function add(Request $request, EntityManagerInterface $manager)
     {
+
+        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Vous devez être connecté pour acceder à cette page !');
 
         $form = $this->createForm(TrickType::class);
         $form->handleRequest($request);
@@ -66,10 +68,13 @@ class WikiController extends AbstractController
     }
 
     /**
-     * @Route("wiki/{id}/edit", name="edit_trick")
+     * @Route("wiki/{id}/modifier", name="edit_trick")
      */
     public function edit(Trick $trick, Request $request, EntityManagerInterface $manager)
     {
+
+        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Vous devez être connecté pour acceder à cette page !');
+
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
@@ -90,10 +95,11 @@ class WikiController extends AbstractController
     }
 
     /**
-     * @Route("/delete/{id}", name="delete_trick")
+     * @Route("/supprimer/{id}", name="delete_trick")
      */
     public function delete(Trick $trick, EntityManagerInterface $manager)
     {
+        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Vous devez être connecté pour acceder à cette page !');
 
         $manager->remove($trick);
 
