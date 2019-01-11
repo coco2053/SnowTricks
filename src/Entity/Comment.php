@@ -18,6 +18,7 @@ class Comment
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min="3", minMessage="Le commentaire doit contenir au moins 3 caracteres !")
      */
     private $content;
 
