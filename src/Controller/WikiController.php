@@ -9,7 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TrickRepository;
 use App\Form\TrickType;
+use App\Form\CommentType;
 use App\Entity\Trick;
+use App\Entity\Comment;
 use App\Entity\TrickImage;
 
 class WikiController extends AbstractController
@@ -29,11 +31,25 @@ class WikiController extends AbstractController
     /**
      * @Route("/wiki/{id}", name="show")
      */
-    public function show(Trick $trick)
+    public function show(Trick $trick, Request $request, EntityManagerInterface $manager)
     {
+        $comment = new Comment;
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setCreatedAt(new \DateTime())
+                    ->setTrick($trick)
+                    ->setUser($this->getUser());
+            $manager->persist($comment);
+            $manager->flush();
+
+            return $this->redirectToRoute('show', ['id' => $trick->getId()]);
+        }
 
         return $this->render('wiki/show.html.twig', [
-            'trick' => $trick
+            'trick' => $trick,
+            'commentForm' => $form->createView()
         ]);
     }
 
@@ -109,7 +125,6 @@ class WikiController extends AbstractController
                 'notice',
                 'Article supprimé !'
             );
-
 
         return $this->redirectToRoute('show_tricks');
     }
