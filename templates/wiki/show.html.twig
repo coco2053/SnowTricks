@@ -10,7 +10,7 @@
       <h1 class="my-4">{{ trick.name }}
       </h1>
       <div class="row">
-        <div class="metadata">Ecrit le {{ trick.createdAt | date('d/m/Y') }} à {{ trick.createdAt | date('H:i') }} dans le groupe {{ trick.trickGroup.title }}</div>
+        <div class="metadata">Ecrit le {{ trick.createdAt |localizeddate('none', 'none', null, null, 'd MMMM Y') }} à {{ trick.createdAt | date('H:i') }} dans le groupe {{ trick.trickGroup.title }}</div>
         <div class="content">
              {% for image in trick.trickImages %}
                 <img src="{{ asset("uploads/images/")~image.url}}" alt="" style="width:20%">
@@ -19,9 +19,40 @@
              {% for video in trick.videos %}
                 {{ video.url | raw }}
              {% endfor %}
-
                 {{ trick.content | raw }}
             </div>
         </div>
+
+        <section class="commentaires">
+        <h1>{{ trick.comments | length }} commentaires :</h1>
+        {% for comment in trick.comments %}
+            <div class="comment">
+                <div class="row">
+                    <div class="col-3">
+                      {% if comment.user.getAvatarImage %}
+                        <img src="{{asset('/uploads/images/'~ comment.user.getAvatarImage.url)}}" style="width:30%"/>
+                        {% else %}
+                        <img src="{{asset('/images/avatar.png')}}" style="width:30%"/>
+                      {% endif %}
+                        {{ comment.user.username }} (<small>{{ comment.createdAt |localizeddate('none', 'none', null, null, 'd MMMM Y') }}</small>)
+
+                    </div>
+                    <div class="col">
+                        {{ comment.content | raw }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% if app.user %}
+        {{ form_start(commentForm) }}
+        {{ form_row(commentForm.content, {'attr': {'placeholder': "Votre commentaire"}}) }}
+        <button type="submit" class="btn btn-success">Commenter</button>
+        {{ form_end(commentForm) }}
+
+        {% else %}
+            <h2>Vous ne pouvez pas commenter si vous n'etes pas connecté !</h2>
+            <a href="{{path('security_login')}}" class="btn btn-primary">Connexion</a>
+        {% endif %}
+    </section>
     </div>
 {% endblock %}
