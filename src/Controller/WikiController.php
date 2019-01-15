@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class WikiController extends AbstractController
      */
     public function showTricks(TrickRepository $repo)
     {
-        $tricks = $repo->findAll();
+        $tricks = $repo->findAllBy(10);
 
         return $this->render('wiki/index.html.twig', [
             'tricks' => $tricks
@@ -31,11 +32,18 @@ class WikiController extends AbstractController
     /**
      * @Route("/wiki/{id}", name="show")
      */
-    public function show(Trick $trick, Request $request, EntityManagerInterface $manager)
+    public function show(Trick $trick, Request $request, EntityManagerInterface $manager, PaginatorInterface $paginator)
     {
         $comment = new Comment;
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
+
+        //$paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $trick->getComments(),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 10)
+        );
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setCreatedAt(new \DateTime())
@@ -49,6 +57,7 @@ class WikiController extends AbstractController
 
         return $this->render('wiki/show.html.twig', [
             'trick' => $trick,
+            'comments' => $result,
             'commentForm' => $form->createView()
         ]);
     }

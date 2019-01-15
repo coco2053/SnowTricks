@@ -25,7 +25,7 @@
 
         <section class="commentaires">
         <h1>{{ trick.comments | length }} commentaires :</h1>
-        {% for comment in trick.comments %}
+        {% for comment in comments %}
             <div class="comment">
                 <div class="row">
                     <div class="col-3">
@@ -53,6 +53,10 @@
             <h2>Vous ne pouvez pas commenter si vous n'etes pas connecté !</h2>
             <a href="{{path('security_login')}}" class="btn btn-primary">Connexion</a>
         {% endif %}
+
+        <div class="navigation text-center">
+          {{ knp_pagination_render(comments) }}
+        </div>
     </section>
     </div>
 {% endblock %}
