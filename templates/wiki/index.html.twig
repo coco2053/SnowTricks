@@ -3,41 +3,57 @@
 {% block title %}Les figures {% endblock %}
 
 {% block body %}
-    <!-- Page Content -->
-    <div class="container">
-
-      <!-- Page Heading -->
-      <h1 class="my-4">Les figures
-        <small>Apprenez les incontournables du snowboard</small>
-      </h1>
-
+  <div class="container-home">
+    <div class="arrow">
+      <a href="#services"><img src="{{ asset('images/arrow-down.png') }}" alt="arrowdown"></a>
+    </div>
+      <img src="{{ asset('images/home.jpg') }}" class="img-fluid" alt="home">
+    </div>
+  <div class="container-fluid">
+    <span class="ancres" id="services" ></span>
+    <div id="tricks">
       <div class="row">
-
         {% for trick in tricks %}
-            <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item">
-              <div class="card h-100">
-                {% if trick.trickImages is not empty %}
-                    {% set image = trick.trickImages.first() %}
-                    <img src="{{ asset("uploads/images/")~image.url }}" alt="" style="width:80%">
-                {% else %}
-                    <img class="card-img-top" src="http://placehold.it/700x400" alt="">
-                {% endif %}
-
-                <div class="card-body">
-                  <h4 class="card-title">
-                    <a href="{{ path('show', {'id': trick.id}) }}">{{ trick.name }}</a>
-                  </h4>
-
-                  {% if app.user %}
-                    <a class="btn btn-danger"
-                         href="{{ path('delete_trick', {'id': trick.id}) }}" onclick="return confirm('Etes-vous sûr ?');">Supprimer</a>
-
-                    <a class="btn btn-danger"
-                         href="{{ path('edit_trick', {'id': trick.id}) }}">Modifier</a>
-                  {% endif %}
+          <div class="col-lg-3 col-md-4 col-sm-6 portfolio-item">
+            <div class="trick-card">
+            <div class="card h-100">
+              {% if trick.trickImages is not empty %}
+                {% set image = trick.trickImages.first() %}
+                <img src="{{ asset("uploads/images/")~image.url }}" alt="" style="width:100%">
+              {% else %}
+                <img class="card-img-top" src="{{ asset("images/no-image.jpg") }}" alt="">
+              {% endif %}
+              <div class="card-body">
+                <div class="card-title">
+                  <a href="{{ path('show', {'id': trick.id}) }}">{{ trick.name }}</a>
                 </div>
+                {% if app.user %}
+                  <div class="icons">
+                  <a href="{{ path('edit_trick', {'id': trick.id}) }}"> <img src="{{ asset("images/pencil.png") }}"></a>
+                  <a href="{{ path('delete_trick', {'id': trick.id}) }}" onclick="return confirm('Etes-vous sûr ?');"> <img src="{{ asset("images/trash.png") }}"></a>
+                </div>
+                {% endif %}
               </div>
             </div>
-            {% endfor %}
+          </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="arrow-up">
+        <div class="card-body loadmore">
+          <a href="{{ path('show_tricks', {'limit': limit}) }} ">Afficher plus de figures</a>
         </div>
+        <a href="#services"><img src="{{ asset('images/arrow-up.png') }}" alt="arrowup"></a>
+        <span class="ancres" id="hash" ></span>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="4-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+  <script src="{{ asset("js/jsAnchor.js") }}"></script>
+
+
 {% endblock %}

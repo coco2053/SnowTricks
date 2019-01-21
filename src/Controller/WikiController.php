@@ -18,19 +18,29 @@ use App\Entity\TrickImage;
 class WikiController extends AbstractController
 {
     /**
-     * @Route("/", name="show_tricks")
+     * @Route("/{limit}", name="show_tricks", requirements={"limit"="\d+"})
      */
-    public function showTricks(TrickRepository $repo)
+    public function showTricks(TrickRepository $repo, $limit = 8)
     {
-        $tricks = $repo->findAllBy(10);
+        $tricks = $repo->findAllBy($limit);
+        $limit += 4;
+
+        if ($limit > 8) {
+            return $this->render('wiki/index.html.twig', [
+                'tricks' => $tricks,
+                'limit' => $limit,
+                'hash' => 'hash'
+            ]);
+        }
 
         return $this->render('wiki/index.html.twig', [
-            'tricks' => $tricks
+            'tricks' => $tricks,
+            'limit' => $limit
         ]);
     }
 
     /**
-     * @Route("/wiki/{id}", name="show")
+     * @Route("/figure/{id}", name="show")
      */
     public function show(Trick $trick, Request $request, EntityManagerInterface $manager, PaginatorInterface $paginator)
     {
@@ -63,7 +73,7 @@ class WikiController extends AbstractController
     }
 
     /**
-     * @Route("/ajouter", name="add_trick")
+     * @Route("/wiki/ajouter", name="add_trick")
      */
     public function add(Request $request, EntityManagerInterface $manager)
     {
@@ -120,7 +130,7 @@ class WikiController extends AbstractController
     }
 
     /**
-     * @Route("/supprimer/{id}", name="delete_trick")
+     * @Route("/wiki/{id}/supprimer", name="delete_trick")
      */
     public function delete(Trick $trick, EntityManagerInterface $manager)
     {

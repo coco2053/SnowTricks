@@ -14,7 +14,7 @@ class TrickImageType extends AbstractType
     {
         $builder
             ->add('file', FileType::class)
-            ->add('url', null, array('attr'=>array('style'=>'display:none;')))
+            //->add('url', null, array('attr'=>array('style'=>'display:none;')))
         ;
     }
 
