@@ -14,6 +14,11 @@ class Mailer
 
     private $mailer;
 
+    /**
+     * [__construct]
+     * @param Environment  $twig
+     * @param Swift_Mailer $mailer
+     */
     public function __construct(
         Environment $twig,
         Swift_Mailer $mailer
@@ -22,6 +27,12 @@ class Mailer
         $this->mailer = $mailer;
     }
 
+    /**
+     * [sendMail]
+     * @param  User   $user
+     * @param  String $title
+     * @param  String $view
+     */
     public function sendMail(User $user, String $title, String $view)
     {
         $message = (new Swift_Message($title))

@@ -1,6 +1,7 @@
-<div id="video-{{ form.vars.name }}">
-        <div class="col-lg-12 ">
-        {{ form_row(form.url) }}
-        <button type="button" class="btn btn-danger btn-remove" data-rel="#video-{{ form.vars.name }}">Supprimer</button>
-        </div>
+<div class="del-video-{{ form.vars.name }}">
+    {{ form_row(form.url, {'label': 'Lien', 'attr': {'required' : 'false',
+                                                         'placeholder' : 'Entrez le code embed de la vidéo',
+                                                         'style' : 'max-width: 300px'}}) }}
+    <button type="button" class="btn btn-remove fa fa-trash fa-lg" data-rel="del-video-{{ form.vars.name }}"></button>
 </div>
+

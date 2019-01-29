@@ -11,6 +11,11 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class RegistrationType extends AbstractType
 {
+    /**
+     * [buildForm]
+     * @param  FormBuilderInterface $builder
+     * @param  array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -24,7 +29,10 @@ class RegistrationType extends AbstractType
             ));
     }
 
-
+    /**
+     * [configureOptions]
+     * @param  OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

@@ -10,14 +10,21 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class TrickImageType extends AbstractType
 {
+    /**
+     * [buildForm]
+     * @param  FormBuilderInterface $builder
+     * @param  array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('file', FileType::class)
-            ->add('url', null, array('attr'=>array('style'=>'display:none;')))
-        ;
+            ->add('file');
     }
 
+    /**
+     * [configureOptions]
+     * @param  OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

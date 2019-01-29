@@ -1,10 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Erreur{% endblock %}
+
 {% block body %}
     <h1>Erreur</h1>
     <p>Ce ticket de validation n'est plus valide !</p>
-
-    <a href="{{ path(app.request.get('_route')) }}">Retour</a>
-
 {% endblock %}

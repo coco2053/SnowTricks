@@ -19,16 +19,15 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
-    // /**
-    //  * @return Trick[] Returns an array of Trick objects
-    //  */
-
+    /**
+     * @return Trick[] Returns an array of Trick objects
+     */
     public function findAllBy($limit)
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.id > :val')
             ->setParameter('val', 0)
-            ->orderBy('t.createdAt', 'ASC')
+            ->orderBy('t.createdAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult()

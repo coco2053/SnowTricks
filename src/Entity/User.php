@@ -11,8 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(
  * fields= {"email"},
- * message= "L'email que vous avez indiqué est déjà utilisé !"
- * )
+ * message= "L'email que vous avez indiqué est déjà utilisé !")
  */
 class User implements UserInterface
 {
@@ -49,7 +48,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isActicve = false;
+    private $isActive = false;
 
     /**
      * @ORM\Column(type="datetime")
@@ -77,10 +76,15 @@ class User implements UserInterface
      */
     private $roles = ['ROLE_USER'];
 
+    /**
+     * [__construct]
+     */
     public function __construct()
     {
         $this->setRegisteredAt(new \DateTime());
     }
+
+    // GETTERS & SETTERS
 
     public function getId(): ?int
     {
@@ -125,12 +129,12 @@ class User implements UserInterface
 
     public function getIsActive(): ?bool
     {
-        return $this->isActicve;
+        return $this->isActive;
     }
 
-    public function setIsActive(bool $isActicve): self
+    public function setIsActive(bool $isActive): self
     {
-        $this->isActicve = $isActicve;
+        $this->isActive = $isActive;
 
         return $this;
     }

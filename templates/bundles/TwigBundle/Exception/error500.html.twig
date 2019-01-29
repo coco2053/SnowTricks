@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur 500 {% endblock %}
+
+{% block body %}
+
+<div class="container-fluid gap-fill">
+    <div class="col-md-3"> </div>
+    <div class="col-md-6 container-trick">
+        <div class="container-in">
+            <div class="responsive">
+            <img src='{{ asset("images/crash.jpg")}}' alt=''/>
+            <p>
+                <h2> Notre serveur a rencontré un problème ! </h2>
+            </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3"> </div>
+</div>
+
+{% endblock %}

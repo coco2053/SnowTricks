@@ -3,60 +3,133 @@
 {% block title %}{{ trick.name }} {% endblock %}
 
 {% block body %}
-    <!-- Page Content -->
-    <div class="container">
-
-      <!-- Page Heading -->
-      <h1 class="my-4">{{ trick.name }}
-      </h1>
-      <div class="row">
-        <div class="metadata">Ecrit le {{ trick.createdAt |localizeddate('none', 'none', null, null, 'd MMMM Y') }} à {{ trick.createdAt | date('H:i') }} dans le groupe {{ trick.trickGroup.title }}</div>
-        <div class="content">
-             {% for image in trick.trickImages %}
-                <img src="{{ asset("uploads/images/")~image.url}}" alt="" style="width:20%">
-             {% endfor %}
-
-             {% for video in trick.videos %}
-                {{ video.url | raw }}
-             {% endfor %}
-                {{ trick.content | raw }}
-            </div>
-        </div>
-
-        <section class="commentaires">
-        <h1>{{ trick.comments | length }} commentaires :</h1>
-        {% for comment in comments %}
-            <div class="comment">
-                <div class="row">
-                    <div class="col-3">
-                      {% if comment.user.getAvatarImage %}
-                        <img src="{{asset('/uploads/images/'~ comment.user.getAvatarImage.url)}}" style="width:30%"/>
-                        {% else %}
-                        <img src="{{asset('/images/avatar.png')}}" style="width:30%"/>
-                      {% endif %}
-                        {{ comment.user.username }} (<small>{{ comment.createdAt |localizeddate('none', 'none', null, null, 'd MMMM Y') }}</small>)
-
-                    </div>
-                    <div class="col">
-                        {{ comment.content | raw }}
-                    </div>
+<!-- Page Content -->
+<div class="container-fluid">
+  <div class="col-md-2"> </div>
+  <div class="col-md-8 container-trick">
+    <div id='carousel-custom' class='carousel slide carousel-fade' data-ride='carousel' data-interval='0'>
+      <!-- Wrapper for slides -->
+      <div class='carousel-inner'>
+        {% if trick.trickImages | length > 0 %}
+          {% for image in trick.trickImages %}
+            {% if loop.first %}
+              <div class='carousel-item active'>
+                {% if app.user %}
+                  <div class="icons-show">
+                    <a href="{{ path('edit_trick', {'id': trick.id}) }}"> <img src="{{ asset("images/pencil.png") }}"></a>
+                    <a href="{{ path('delete_trick', {'id': trick.id}) }}" onclick="return confirm('Etes-vous sûr ?');"> <img src="{{ asset("images/trash.png") }}"></a>
+                  </div>
+                {% endif %}
+                <img src='{{ asset("uploads/images/")~image.url}}' alt='' />
+                <div class="carousel-caption">
+                  {{ trick.name }}
                 </div>
-            </div>
-        {% endfor %}
-        {% if app.user %}
-        {{ form_start(commentForm) }}
-        {{ form_row(commentForm.content, {'attr': {'placeholder': "Votre commentaire"}}) }}
-        <button type="submit" class="btn btn-success">Commenter</button>
-        {{ form_end(commentForm) }}
-
+              </div>
+            {% else %}
+              <div class='carousel-item'>
+                <img src='{{ asset("uploads/images/")~image.url}}' alt='' />
+              </div>
+            {% endif %}
+          {% endfor %}
         {% else %}
-            <h2>Vous ne pouvez pas commenter si vous n'etes pas connecté !</h2>
-            <a href="{{path('security_login')}}" class="btn btn-primary">Connexion</a>
+          <div class='carousel-item active'>
+            <img src='{{ asset("images/no-image.jpg")}}' alt='' />
+            <div class="carousel-caption">
+              {{ trick.name }}
+            </div>
+          </div>
         {% endif %}
-
-        <div class="navigation text-center">
+        {% if trick.videos | length > 0 %}
+          {% for video in trick.videos %}
+            <div class='carousel-item'>
+              {{ video.url | raw }}
+            </div>
+          {% endfor %}
+        {% endif %}
+        <div class="image-band">
+          {% if trick.trickImages | length > 0 %}
+            {% for image in trick.trickImages %}
+              {% set i = loop.index -1 %}
+              <a data-target='#carousel-custom' data-slide-to="{{ i }}">
+                <img src='{{ asset("uploads/images/")~image.url}}' alt='' />
+              </a>
+            {% endfor %}
+          {% endif %}
+          {% if trick.videos | length > 0 %}
+            {% for video in trick.videos %}
+              {% set i = trick.TrickImages | length + (loop.index -1) %}
+              <a data-target='#carousel-custom' data-slide-to="{{ i }}">
+              <img src='{{ asset("/images/video.jpg")}}' alt='' />
+              </a>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <article>
+      {{ trick.content | raw }}
+    </article>
+    <div class="info">
+      Publié le {{ trick.createdAt |localizeddate('none', 'none', null, null, 'd MMMM Y') }}
+    </div>
+    {% if trick.updatedAt is not null %}
+      <div class="info">
+        Mis à jour le {{ trick.updatedAt |localizeddate('none', 'none', null, null, 'd MMMM Y') }}
+    {% endif %}
+      </div>
+    <div class="info">
+      Catégorie: {{ trick.trickGroup.title }}
+    </div>
+    <div class="comment-form">
+      {% if app.user %}
+        <div class="comment-item">
+          {{ form_start(commentForm) }}
+          {{ form_row(commentForm.content, {'label': ' ', 'attr': {'placeholder': "Votre commentaire",                                                         'cols': "40"}}) }}
+        </div>
+        <div class="comment-item">
+          {{ form_end(commentForm) }}
+        </div>
+      {% else %}
+        <div class="comment-item">
+          <h3>Vous ne pouvez pas commenter si vous n'etes pas connecté</h3>
+          <a href="{{path('security_login')}}" class="btn btn-primary">Connexion</a>
+        </div>
+      {% endif %}
+    </div>
+    <div class="comment-form">
+      {% if trick.comments | length > 0 %}
+        {% for comment in comments %}
+          <div class="comment">
+            <div class="avatar">
+            {% if comment.user.getAvatarImage %}
+              <img src="{{asset('/uploads/images/'~ comment.user.getAvatarImage.url)}}"/>
+            {% else %}
+              <img src="{{asset('/images/avatar.png')}}"/>
+            {% endif %}
+            </div>
+            <div class="comment-content">
+              <div>{{ comment.content | raw }}</div>
+              <div><small>{{ comment.user.username }} le {{ comment.createdAt |localizeddate('none', 'none', null, null, 'd MMMM Y') }}</small></div>
+            </div>
+          </div>
+        {% endfor %}
+        <div class="navigation">
           {{ knp_pagination_render(comments) }}
         </div>
-    </section>
+      {% else %}
+        <h3>Aucun commentaire pour cette figure</h3>
+      {% endif %}
+      </div>
     </div>
+  </div>
+  <div class="col-md-2"> </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

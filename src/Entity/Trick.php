@@ -28,11 +28,14 @@ class Trick
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min="3", minMessage="Le nom doit contenir au moins 3 caracteres !")
+     * @Assert\Length(max="20", minMessage="Le nom ne doit contenir plus de 20 caracteres !")
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min="3", minMessage="Le contenu doit contenir au moins 3 caracteres !")
      */
     private $content;
 
@@ -42,7 +45,7 @@ class Trick
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
 
@@ -65,9 +68,13 @@ class Trick
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick", orphanRemoval=true)
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $comments;
 
+    /**
+     * [__construct]
+     */
     public function __construct()
     {
         $this->videos = new ArrayCollection();
@@ -76,13 +83,7 @@ class Trick
         $this->comments = new ArrayCollection();
     }
 
-    /**
-     * @ORM\PreFlush
-     */
-    public function updateDate()
-    {
-        $this->setUpdatedAt(new \DateTime());
-    }
+    // GETTERS & SETTERS
 
     public function getId(): ?int
     {

@@ -1,0 +1,45 @@
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('show_tricks') }}">Les figures</a>
+        </li>
+        {% if not app.user %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('security_login') }}">Se connecter</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('security_registration') }}">S'incrire</a>
+        </li>
+          {% else %}
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ path('add_trick') }}" class="nav-link">Ajouter une figure</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ path('security_logout') }}" class="nav-link">Déconnexion</a>
+        {% endif %}
+      </li>
+      </ul>
+    </div>
+    {% if app.user %}
+      <div class='user-profile'>
+        {{ app.user.getUsername }}
+        {% if app.user.getAvatarImage %}
+          <img src="{{asset('/uploads/images/'~ app.user.getAvatarImage.url)}}" style="width:30%"/>
+          {% else %}
+          <img src="{{asset('/images/avatar-white.png')}}" style="width:30%"/>
+        {% endif %}
+    {% endif %}
+  </div>
+  <img class="logo" src="{{ asset("images/logo.png") }}" alt="" style="width:15%">
+</nav>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.bundle.min.js"></script>

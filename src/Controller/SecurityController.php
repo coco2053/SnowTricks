@@ -2,27 +2,33 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
+use App\Service\Mailer;
 use App\Entity\AvatarImage;
 use App\Form\RegistrationType;
 use App\Form\ChangePasswordType;
 use App\Repository\UserRepository;
-use App\Service\Mailer;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class SecurityController extends AbstractController
 {
-
     /**
      * @Route("/inscription", name="security_registration")
+     *
+     * [Handles registration process]
+     * @param  Request                      $request
+     * @param  EntityManagerInterface       $manager
+     * @param  UserPasswordEncoderInterface $encoder
+     * @param  Mailer                       $mailer
+     * @return [render view]
      */
-    public function registration(Request $request, ObjectManager $manager, UserPasswordEncoderInterface $encoder, Mailer $mailer)
+    public function registration(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder, Mailer $mailer)
     {
         $user = new User();
 
@@ -59,6 +65,10 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/connexion", name="security_login")
+     *
+     * [Handles login process]
+     * @param  AuthenticationUtils $authenticationUtils
+     * @return [render view]
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -72,6 +82,9 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/deconnexion", name="security_logout")
+     *
+     * [Handles logout process]
+     * @return [void]
      */
     public function logout()
     {
@@ -79,8 +92,14 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/validation/{token}", name="security_confirm")
+     *
+     * [Handles registration validation process]
+     * @param  string                 $token
+     * @param  UserRepository         $userRepository
+     * @param  EntityManagerInterface $manager
+     * @return [render view]
      */
-    public function validate(string $token, UserRepository $userRepository, ObjectManager $manager)
+    public function validate(string $token, UserRepository $userRepository, EntityManagerInterface $manager)
     {
         if (!\is_null($user = $userRepository->checkConfirmationToken($token))) {
             $user->setIsActive(true);
@@ -103,12 +122,19 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/demande-changement-de-mdp", name="security_password_claim")
+     *
+     * [Handles user's password reset claim]
+     * @param  Request                $request
+     * @param  UserRepository         $userRepository
+     * @param  EntityManagerInterface $manager
+     * @param  Mailer                 $mailer
+     * @return [render view]
      */
-    public function changePasswordClaim(Request $request, UserRepository $userRepository, ObjectManager $manager, Mailer $mailer)
+    public function changePasswordClaim(Request $request, UserRepository $userRepository, EntityManagerInterface $manager, Mailer $mailer)
     {
 
-        if (isset($_POST['mail'])) {
-            $email = strip_tags($_POST['mail']);
+        if (null !== $request->request->get('mail')) {
+            $email = strip_tags($request->request->get('mail'));
 
             if (!\is_null($user = $userRepository->findOneBy(array('email' => $email)))) {
                 $user->setPasswordToken(bin2hex(random_bytes(32)));
@@ -134,11 +160,18 @@ class SecurityController extends AbstractController
         ]);
     }
 
-
     /**
      * @Route("/reinitialiser-mdp/{token}", name="security_change_password")
+     *
+     * [Handles user's password reset process]
+     * @param  Request                      $request
+     * @param  string                       $token
+     * @param  UserRepository               $userRepository
+     * @param  EntityManagerInterface       $manager
+     * @param  UserPasswordEncoderInterface $encoder
+     * @return [render view]
      */
-    public function changePassword(Request $request, string $token, UserRepository $userRepository, ObjectManager $manager, UserPasswordEncoderInterface $encoder)
+    public function changePassword(Request $request, string $token, UserRepository $userRepository, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder)
     {
         if (!\is_null($user = $userRepository->checkPasswordToken($token))) {
             $form = $this->createForm(ChangePasswordType::class, $user);

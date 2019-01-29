@@ -47,6 +47,9 @@ class TrickImage
 
     /**
      * @ORM\PreFlush
+     *
+     * [Handles image resizing]
+     * @return [void]
      */
     public function handle()
     {
@@ -63,11 +66,32 @@ class TrickImage
         }
         $name = $this->createName();
         $this->setUrl($name);
-        $this->file->move($this->path, $name);
+        $width = 800;
+        $height = 450;
+        $size = getimagesize($this->file);
+        $output = imagecreatetruecolor($width, $height);
+        $ratio = min($size[0]/$width, $size[1]/$height);
+        $deltax = $size[0]-($ratio * $width);
+        $deltay = $size[1]-($ratio * $height);
+
+        if ($this->file-> getClientOriginalExtension() == 'jpeg' or $this->file-> getClientOriginalExtension() == 'jpg') {
+            $image = imagecreatefromjpeg($this->file);
+            imagecopyresampled($output, $image, 0, 0, $deltax/2, $deltay/2, $width, $height, $size[0]-$deltax, $size[1]-$deltay);
+            imagejpeg($output, $this->path.'/'.$this->url, 100);
+        }
+
+        if ($this->file-> getClientOriginalExtension() == 'png') {
+            $image = imagecreatefrompng($this->file);
+            imagecopyresampled($output, $image, 0, 0, $deltax/2, $deltay/2, $width, $height, $size[0]-$deltax, $size[1]-$deltay);
+            imagepng($output, $this->path.'/'.$this->url, 3);
+        }
     }
 
     /**
      * @ORM\PreRemove
+     *
+     * [Handles image file removal]
+     * @return [void]
      */
     public function handleRemove()
     {
@@ -81,11 +105,16 @@ class TrickImage
         }
     }
 
-
+    /**
+     * [Generates a unique crypted name]
+     * @return [string]
+     */
     private function createName(): string
     {
         return md5(uniqid()). $this->file->getClientOriginalName();
     }
+
+    // GETTERS & SETTERS
 
     public function getTrick(): ?Trick
     {

@@ -18,19 +18,41 @@ use App\Entity\TrickImage;
 class WikiController extends AbstractController
 {
     /**
-     * @Route("/", name="show_tricks")
+     * @Route("/{limit}", name="show_tricks", requirements={"limit"="\d+"})
+     *
+     * [Shows all tricks]
+     * @param  TrickRepository $repo
+     * @param  integer         $limit
+     * @return [render view]
      */
-    public function showTricks(TrickRepository $repo)
+    public function showTricks(TrickRepository $repo, $limit = 8)
     {
-        $tricks = $repo->findAllBy(10);
+        $tricks = $repo->findAllBy($limit);
+        $limit += 4;
+
+        if ($limit > 8) {
+            return $this->render('wiki/index.html.twig', [
+                'tricks' => $tricks,
+                'limit' => $limit,
+                'hash' => 'hash'
+            ]);
+        }
 
         return $this->render('wiki/index.html.twig', [
-            'tricks' => $tricks
+            'tricks' => $tricks,
+            'limit' => $limit
         ]);
     }
 
     /**
-     * @Route("/wiki/{id}", name="show")
+     * @Route("/figure/{id}", name="show")
+     *
+     * [Show a specific trick]
+     * @param  Trick                  $trick
+     * @param  Request                $request
+     * @param  EntityManagerInterface $manager
+     * @param  PaginatorInterface     $paginator
+     * @return [render view]
      */
     public function show(Trick $trick, Request $request, EntityManagerInterface $manager, PaginatorInterface $paginator)
     {
@@ -38,7 +60,6 @@ class WikiController extends AbstractController
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
-        //$paginator = $this->get('knp_paginator');
         $result = $paginator->paginate(
             $trick->getComments(),
             $request->query->getInt('page', 1),
@@ -63,7 +84,12 @@ class WikiController extends AbstractController
     }
 
     /**
-     * @Route("/ajouter", name="add_trick")
+     * @Route("/wiki/ajouter", name="add_trick")
+     *
+     * [Allows to write a new trick]
+     * @param Request                $request
+     * @param EntityManagerInterface $manager
+     * @return [render view]
      */
     public function add(Request $request, EntityManagerInterface $manager)
     {
@@ -94,6 +120,12 @@ class WikiController extends AbstractController
 
     /**
      * @Route("wiki/{id}/modifier", name="edit_trick")
+     *
+     * [Allows to modify an existing trick]
+     * @param  Trick                  $trick
+     * @param  Request                $request
+     * @param  EntityManagerInterface $manager
+     * @return [render view]
      */
     public function edit(Trick $trick, Request $request, EntityManagerInterface $manager)
     {
@@ -104,6 +136,8 @@ class WikiController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $trick->setUpdatedAt(new \DateTime());
+            $manager->persist($trick);
             $manager->flush();
 
             $this->addFlash(
@@ -115,12 +149,18 @@ class WikiController extends AbstractController
         }
 
         return $this->render('wiki/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'trick' => $trick
         ]);
     }
 
     /**
-     * @Route("/supprimer/{id}", name="delete_trick")
+     * @Route("/wiki/{id}/supprimer", name="delete_trick")
+     *
+     * [Allows to delete an existing trick]
+     * @param  Trick                  $trick
+     * @param  EntityManagerInterface $manager
+     * @return [redirection]
      */
     public function delete(Trick $trick, EntityManagerInterface $manager)
     {

@@ -26,6 +26,12 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     private $router;
     private $csrfTokenManager;
 
+    /**
+     * [__construct]
+     * @param EntityManagerInterface    $entityManager
+     * @param RouterInterface           $router
+     * @param CsrfTokenManagerInterface $csrfTokenManager
+     */
     public function __construct(EntityManagerInterface $entityManager, RouterInterface $router, CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->entityManager = $entityManager;
@@ -33,12 +39,22 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $this->csrfTokenManager = $csrfTokenManager;
     }
 
+    /**
+     * [supports]
+     * @param  Request $request
+     * @return [route]
+     */
     public function supports(Request $request)
     {
-        return 'app_login' === $request->attributes->get('_route')
+        return 'security_login' === $request->attributes->get('_route')
             && $request->isMethod('POST');
     }
 
+    /**
+     * [getCredentials]
+     * @param  Request $request
+     * @return [credentials]
+     */
     public function getCredentials(Request $request)
     {
         $credentials = [
@@ -54,6 +70,12 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $credentials;
     }
 
+    /**
+     * [getUser]
+     * @param  [type]                $credentials  [description]
+     * @param  UserProviderInterface $userProvider [description]
+     * @return [user]                              [description]
+     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
@@ -61,35 +83,54 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
             throw new InvalidCsrfTokenException();
         }
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials[
+            'email'],
+            'isActive' => true]);
 
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
+            throw new CustomUserMessageAuthenticationException('Cet email n\'est pas enregistré ou le compte n\'est pas validé.');
         }
 
         return $user;
     }
 
+    /**
+     * [checkCredentials]
+     * @param  $credentials
+     * @param  UserInterface $user
+     * @return [boolean]
+     */
     public function checkCredentials($credentials, UserInterface $user)
     {
         // Check the user's password or other credentials and return true or false
         // If there are no credentials to check, you can just return true
-        throw new \Exception('TODO: check the credentials inside '.__FILE__);
+        //throw new \Exception('TODO: check the credentials inside '.__FILE__);
+        return true;
     }
 
+    /**
+     * [onAuthenticationSuccess]
+     * @param  Request        $request
+     * @param  TokenInterface $token
+     * @param  [type]         $providerKey
+     * @return [redirect]
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
 
-        // For example : return new RedirectResponse($this->router->generate('some_route'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        return new RedirectResponse($this->router->generate('show_tricks'));
     }
 
+    /**
+     * [getLoginUrl]
+     * @return [route]
+     */
     protected function getLoginUrl()
     {
-        return $this->router->generate('app_login');
+        return $this->router->generate('security_login');
     }
 }
