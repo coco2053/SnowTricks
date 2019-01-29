@@ -24,7 +24,7 @@ class TrickFixtures extends Fixture
         //Create 3 fake Trick Groups
         for ($i = 1; $i <= 3; $i++) {
             $group = new TrickGroup();
-            $group->setTitle($faker->sentence());
+            $group->setTitle($faker->sentence($nbWords = 1, $variableNbWords = true));
 
             $manager->persist($group);
 
@@ -38,7 +38,7 @@ class TrickFixtures extends Fixture
 
                 $date = $faker->dateTimeBetween('-6 months');
 
-                $trick->setName($faker->sentence())
+                $trick->setName($faker->sentence($nbWords = 1, $variableNbWords = true))
                         ->setContent($content)
                         ->setCreatedAt($date)
                         ->setUpdatedAt($date)
@@ -46,13 +46,6 @@ class TrickFixtures extends Fixture
 
                 $manager->persist($trick);
 
-                // Create 4 TrickImage
-                for ($k = 1; $k <= 4; $k++) {
-                    $image = new TrickImage();
-                    $image->setUrl($faker->imageUrl());
-                    $image->setTrick($trick);
-                    $manager->persist($image);
-                }
                 // Reference for VideoFixtures
                 $this->setReference('Trick' .$h, $trick);
             }
