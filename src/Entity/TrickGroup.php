@@ -28,10 +28,15 @@ class TrickGroup
      */
     private $tricks;
 
+    /**
+     * [__construct]
+     */
     public function __construct()
     {
         $this->tricks = new ArrayCollection();
     }
+
+    // GETTERS & SETTERS
 
     public function getId(): ?int
     {

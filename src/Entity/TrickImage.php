@@ -47,6 +47,9 @@ class TrickImage
 
     /**
      * @ORM\PreFlush
+     *
+     * [Handles image resizing]
+     * @return [void]
      */
     public function handle()
     {
@@ -86,6 +89,9 @@ class TrickImage
 
     /**
      * @ORM\PreRemove
+     *
+     * [Handles image file removal]
+     * @return [void]
      */
     public function handleRemove()
     {
@@ -99,11 +105,16 @@ class TrickImage
         }
     }
 
-
+    /**
+     * [Generates a unique crypted name]
+     * @return [string]
+     */
     private function createName(): string
     {
         return md5(uniqid()). $this->file->getClientOriginalName();
     }
+
+    // GETTERS & SETTERS
 
     public function getTrick(): ?Trick
     {

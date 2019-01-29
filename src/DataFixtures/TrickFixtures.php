@@ -10,7 +10,10 @@ use App\Entity\TrickImage;
 
 class TrickFixtures extends Fixture
 {
-
+    /**
+     * [load]
+     * @param  ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         // Create Fake Factory parametered to french
@@ -54,7 +57,6 @@ class TrickFixtures extends Fixture
                 $this->setReference('Trick' .$h, $trick);
             }
         }
-
         $manager->flush();
     }
 }

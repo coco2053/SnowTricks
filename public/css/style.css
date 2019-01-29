@@ -1,3 +1,7 @@
+/*
+ * Snowtrick style sheet by Bastien Vacherand
+ */
+
 @import url('https://fonts.googleapis.com/css?family=Permanent+Marker');
 
 html {
@@ -26,11 +30,73 @@ html {
     color: white;
 }
 
+.login input {
+    margin-top: 20px;
+}
+
+.password-claim {
+    margin-top: 10px;
+}
+
+.gap-fill {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.navigation nav ul {
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+}
+
 .container-home {
     width: 100%;
     height: 100%;
     position: relative;
 }
+
+.container-in {
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: left;
+}
+.container-trick {
+    margin-top: 100px;
+    margin-bottom: 50px;
+    border-style: solid;
+    border-width: 2px;
+    color: #343a40;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+.column {
+  flex: 50%;
+  padding: 0 4px;
+}
+
+.column img {
+  margin-top: 8px;
+  vertical-align: middle;
+}
+
+.form {
+    margin-top: 30px;
+}
+
+.col-md-8 {
+    padding: 0px;
+}
+
 .arrow {
     width: auto;
     float: right;
@@ -40,6 +106,34 @@ html {
     z-index: 1000;
     padding-bottom: 15px;
     padding-right: 50px;
+}
+
+.icons-show {
+    width: 100px;
+    height: 35px;
+    padding: 2px;
+    margin-right: 20px;
+    float: right;
+    position: absolute;
+    right: 0px;
+    top: 20px;
+    z-index: 1000;
+    background: white;
+    border-style: solid;
+    border-width: 2px;
+    color: #343a40;
+}
+
+.icons-show  a img {
+    width: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-style: none;
+}
+
+.responsive img {
+    width: 100%;
+    height: auto;
 }
 
 .arrow-up {
@@ -65,8 +159,20 @@ html {
     border-width: 2px;
     color: #343a40;
 }
+
 .trick-card img {
     padding: 2px;
+}
+
+.card-title {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 100%;
+    float: left;
+    padding-bottom: 0px;
+}
+
+.card-title a {
+    color: #343a40;
 }
 
 .card-body {
@@ -91,15 +197,60 @@ html {
     float: right;
 
 }
-.card-title {
-    font-family: 'Permanent Marker', cursive;
-    font-size: 100%;
-    float: left;
-    padding-bottom: 0px;
+
+.info {
+    display: inline-block;
+    max-width: 300px;
+    margin: 1em;
+    padding: 8px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    color: #343a40;
 }
 
-.card-title a {
+article {
+    padding-left: 80px;
+    padding-right: 80px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: justify;
+}
+
+.comment-form {
+    border-top: solid;
+    margin-top: 20px;
+    margin-left: 12%;
+    margin-right: 12%;
+    margin-bottom: 20px;
+    border-width: 2px;
     color: #343a40;
+    padding: 25px;
+}
+
+.comment-content {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    border-style: solid;
+    border-width: 2px;
+    padding: 8px;
+    color: #343a40;
+    width: 100%;
+}
+
+.comment img {
+    margin-right: 20px;
+    width: 80px;
+}
+.comment {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+}
+
+.avatar {
+    display: inline-block;
 }
 
 .loadmore {
@@ -115,30 +266,152 @@ html {
     color: #343a40;
 }
 
+.add-image {
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.buttons {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.buttons .btn {
+    margin-right: 10px;
+}
+
+.image-band {
+    margin-top: 30px;
+}
+
+.center {
+    text-align: center;
+}
+
+.image-band a {
+    overflow: hidden;
+    display: inline-block;
+    margin-bottom: 8px;
+    width: calc(50% - 4px);
+    margin-right: 8px;
+    margin-left: 8px;
+    width: calc(18% - 6px);
+}
+
+.image-band a:hover img {
+  transform: scale(1.15);
+}
+
+.image-band img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    background: #ccc;
+    transition: transform .2s ease-in-out;
+    border-style: solid;
+    border-width: 2px;
+    color: #343a40;
+}
+
+#carousel-custom {
+    width: 100%;
+    text-align: center;
+}
+
+.carousel-item img, iframe {
+    width: 100%;
+    max-height: 500px;
+    border-bottom: solid;
+    border-width: 2px;
+    color: #343a40;
+}
+
+.carousel.carousel-fade .carousel-item {
+    opacity: 0;
+    transition: opacity ease-out .1s;
+}
+
+.carousel.carousel-fade .carousel-item.active {
+    opacity: 1 !important;
+}
+
+.carousel-caption {
+    margin: 0;
+    padding: 0;
+    bottom: 0px;
+    font-family: 'Permanent Marker', cursive;
+    color: #343a40;
+}
+
+@media (max-width: 4000px) {
+
+    .arrow img {
+        width: 100%;
+    }
+
+    .carousel-caption {
+        font-size: 400%;
+    }
+}
+
 @media (max-width: 1280px) {
 
-.arrow img {
-    width: 70%;
-}
+    .arrow img {
+        width: 70%;
+    }
+
+    .carousel-caption {
+        font-size: 300%;
+    }
 }
 
 @media (max-width: 1024px) {
 
-.arrow img {
-    width: 60%;
-}
+    .arrow img {
+        width: 60%;
+    }
+
+    .carousel-caption {
+        font-size: 250%;
+    }
+
+    .icons-show {
+        width: 60px;
+        height: 30px;
+        padding: 0;
+    }
+
+    .icons-show  a img {
+        width: 20px;
+        padding: 0;
+        margin: 0;
+    }
+
 }
 
 @media (max-width: 768px) {
 
-.arrow img {
-    width: 50%;
-}
+    .arrow img {
+        width: 50%;
+    }
+
+    .carousel-caption {
+            font-size: 200%;
+    }
 }
 
 @media (max-width: 500px) {
 
-.arrow img {
-    width: 40%;
-}
+    .arrow img {
+        width: 40%;
+    }
+
+    .carousel-caption {
+            font-size: 150%;
+    }
+    .comment-form {
+    margin-left: 1%;
+    margin-right: 1%;
+    }
 }

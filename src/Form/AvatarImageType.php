@@ -10,6 +10,11 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class AvatarImageType extends AbstractType
 {
+    /**
+     * [buildForm]
+     * @param  FormBuilderInterface $builder
+     * @param  array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -17,6 +22,10 @@ class AvatarImageType extends AbstractType
         ;
     }
 
+    /**
+     * [configureOptions]
+     * @param  OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

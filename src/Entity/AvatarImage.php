@@ -41,6 +41,9 @@ class AvatarImage
 
     /**
      * @ORM\PreFlush
+     *
+     * [Handles image resizing process]
+     * @return [void]
      */
     public function handle()
     {
@@ -81,6 +84,9 @@ class AvatarImage
 
     /**
      * @ORM\PreRemove
+     *
+     * [Handles image file removal]
+     * @return [void]
      */
     public function handleRemove()
     {
@@ -94,10 +100,16 @@ class AvatarImage
         }
     }
 
+    /**
+     * [Generates a unique crypted name]
+     * @return [string]
+     */
     private function createName(): string
     {
         return md5(uniqid()). $this->file->getClientOriginalName();
     }
+
+    // GETTERS & SETTERS
 
     public function getId(): ?int
     {

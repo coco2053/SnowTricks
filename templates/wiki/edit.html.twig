@@ -1,50 +1,112 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Modification{% endblock %}
+
 {% block body %}
 
-    <h1>Page de modification</h1>
+<!-- Page Content -->
+<div class="container-fluid">
+  <div class="col-md-2"> </div>
+  <div class="col-md-8 container-trick">
+    <div id='carousel-custom' class='carousel slide carousel-fade' data-ride='carousel' data-interval='0'>
+      <!-- Wrapper for slides -->
+      <div class='carousel-inner'>
+        {% if trick.trickImages | length > 0 %}
+          {% for image in trick.trickImages %}
+            {% if loop.first %}
+              <div class='carousel-item active'>
+                <img src='{{ asset("uploads/images/")~image.url}}' alt='' />
+                <div class="carousel-caption">
+                  {{ trick.name }}
+                </div>
+              </div>
+            {% else %}
+              <div class='carousel-item'>
+                <img src='{{ asset("uploads/images/")~image.url}}' alt='' />
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <div class='carousel-item active'>
+            <img src='{{ asset("images/no-image.jpg")}}' alt='' />
+            <div class="carousel-caption">
+              {{ trick.name }}
+            </div>
+          </div>
+        {% endif %}
+        {% if trick.videos | length > 0 %}
+          {% for video in trick.videos %}
+            <div class='carousel-item'>
+              {{ video.url | raw }}
+            </div>
+          {% endfor %}
+        {% endif %}
+        <article>
+        {{ form_start(form) }}
 
-   {{ form_start(form) }}
-   {{ form_row(form._token) }}
+        {{ form_row(form._token) }}
 
-    {{ form_row(form.name, {'attr': {'placeholder': "Nom de la figure"}}) }}
-
-    {{ form_row(form.trickGroup) }}
-
-    {{ form_row(form.content, {'attr': {'placeholder': "Description de la figure"}}) }}
-
-   <p><button type="button" class="btn btn-sm btn-primary btn-add" data-rel="#images">Ajouter</button></p>
-   <div id="images" class="row" data-index="{{ form.trickImages|length > 0 ? form.trickImages|last.vars.name+1 : 0 }}" data-prototype="{{ include("theme/form_image.html.twig", { form: form.trickImages.vars.prototype })|e("html_attr") }}">
-        {% for image in form.trickImages %}
-            {{ include("theme/form_image.html.twig", { form: image }) }}
-            <div class="del-image-{{image.vars.name}}">
-            <img src="{{ asset("uploads/images/")~image.vars.value.url}}" alt="" style="width:20%">
+        <div class="image-band">
+            <div id="images" data-index="{{ form.trickImages|length > 0 ? form.trickImages|last.vars.name+1 : 0 }}" data-prototype="{{ include("theme/form_image.html.twig", { form: form.trickImages.vars.prototype })|e("html_attr") }}">
+            {% if form.trickImages | length > 0 %}
+                {% for image in form.trickImages %}
+                  {% set i = loop.index -1 %}
+                  <a class="del-image-{{image.vars.name}}" >
+                    <img data-target='#carousel-custom' data-slide-to="{{ i }}" src='{{ asset("uploads/images/")~image.vars.value.url}}' alt='' />
+                    {{ include("theme/form_image.html.twig", { form: image }) }}
+                    </a>
+                {% endfor %}
+            {% endif %}
+            <div class="add-image">
+                Ajouter des images
+                <button type="button" class="btn btn-sm btn-add fa fa-plus fa-lg" data-rel="#images"></button>
+            </div>
         </div>
-        {% endfor %}
+        <div id="videos" data-index="{{ form.videos|length > 0 ? form.videos|last.vars.name+1 : 0 }}" data-prototype="{{ include("theme/form_video.html.twig", { form: form.videos.vars.prototype })|e("html_attr") }}">
+            {% if form.videos | length > 0 %}
+                {% for video in form.videos %}
+                    {% set i = form.trickImages | length + (loop.index -1) %}
+                    <a class="del-video-{{video.vars.name}}">
+                    <img  data-target='#carousel-custom' data-slide-to="{{ i }}" src='{{ asset("/images/video.jpg")}}' alt='' />
+                    {{ include("theme/form_video.html.twig", { form: video }) }}
+                    </a>
+                {% endfor %}
+                {% endif %}
+                <div class="add-image">
+                    Ajouter des vidéos
+                    <button type="button" class="btn btn-sm btn-add fa fa-plus fa-lg" data-rel="#videos"></button>
+                </div>
+            </div>
+          </div>
+        </div>
     </div>
+    </article>
+    <article>
 
-    <p><button type="button" class="btn btn-sm btn-primary btn-add" data-rel="#videos">Ajouter</button></p>
-    <div id="videos" class="row" data-index="{{ form.videos|length > 0 ? form.videos|last.vars.name+1 : 0 }}" data-prototype="{{ include("theme/form_video.html.twig", { form: form.videos.vars.prototype })|e("html_attr") }}">
-        {% for video in form.videos %}
-            {{ include("theme/form_video.html.twig", { form: video }) }}
-        {% endfor %}
+    {{ form_row(form.name, {'label': 'Nom de la figure', 'attr': {'placeholder': 'Entrez le nom de la figure',
+                                                                  'style': 'max-width: 200px'}}) }}
+
+    {{ form_row(form.content, {'label': 'Description', 'attr': {'placeholder': 'Décrivez comment réaliser la figure',
+                                                                'rows': "6" }}) }}
+
+    {{ form_row(form.trickGroup, {'label': 'Groupe', 'attr': {'style': 'max-width: 150px'}}) }}
+
+    <div class="buttons">
+        <a href="{{ path('show_tricks') }}">
+        <button class="btn btn-danger">Annuler</button>
+        </a>
+        <button type="submit" class="btn btn-success">Modifier</button>
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
-        <br>
-
-    <button type="submit" class="btn btn-success">
-            Modifier la figure
-    </button>
-
-    {{ form_end(form, {'render_rest': false}) }}
+    </article>
+  </div>
+  <div class="col-md-2"> </div>
+</div>
 
 {% endblock %}
 
 {% block javascripts %}
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="4-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-
     <script src="{{ asset("js/jsForm.js") }}"></script>
-
-
 {% endblock %}

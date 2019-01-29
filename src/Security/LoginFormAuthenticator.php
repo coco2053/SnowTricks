@@ -26,6 +26,12 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     private $router;
     private $csrfTokenManager;
 
+    /**
+     * [__construct]
+     * @param EntityManagerInterface    $entityManager
+     * @param RouterInterface           $router
+     * @param CsrfTokenManagerInterface $csrfTokenManager
+     */
     public function __construct(EntityManagerInterface $entityManager, RouterInterface $router, CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->entityManager = $entityManager;
@@ -33,12 +39,22 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $this->csrfTokenManager = $csrfTokenManager;
     }
 
+    /**
+     * [supports]
+     * @param  Request $request
+     * @return [route]
+     */
     public function supports(Request $request)
     {
         return 'security_login' === $request->attributes->get('_route')
             && $request->isMethod('POST');
     }
 
+    /**
+     * [getCredentials]
+     * @param  Request $request
+     * @return [credentials]
+     */
     public function getCredentials(Request $request)
     {
         $credentials = [
@@ -54,6 +70,12 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $credentials;
     }
 
+    /**
+     * [getUser]
+     * @param  [type]                $credentials  [description]
+     * @param  UserProviderInterface $userProvider [description]
+     * @return [user]                              [description]
+     */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
@@ -73,6 +95,12 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $user;
     }
 
+    /**
+     * [checkCredentials]
+     * @param  $credentials
+     * @param  UserInterface $user
+     * @return [boolean]
+     */
     public function checkCredentials($credentials, UserInterface $user)
     {
         // Check the user's password or other credentials and return true or false
@@ -81,6 +109,13 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return true;
     }
 
+    /**
+     * [onAuthenticationSuccess]
+     * @param  Request        $request
+     * @param  TokenInterface $token
+     * @param  [type]         $providerKey
+     * @return [redirect]
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
@@ -90,6 +125,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return new RedirectResponse($this->router->generate('show_tricks'));
     }
 
+    /**
+     * [getLoginUrl]
+     * @return [route]
+     */
     protected function getLoginUrl()
     {
         return $this->router->generate('security_login');
