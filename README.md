@@ -4,8 +4,7 @@
 Projet 6 - Parcours développeur d'application PHP/Symfony - OpenClassrooms
 --------------------------------------------------------------------------
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/60d62b4aea024fa0887f58955f6b395a)](https://www.codacy.com/app/coco2053/blog?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=coco2053/blog&amp;utm_campaign=Badge_Grade)
-
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fdc7ef9998ba41f6b44dbacad4a6cc46)](https://www.codacy.com/app/coco2053/SnowTricks?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=coco2053/SnowTricks&amp;utm_campaign=Badge_Grade)
 Bonjour, ceci est le projet  de site communautaire de snowboard qui m'a permit d'apprendre le framework Symfony 4.
 Les documents preparatoires (diagrammes) se trouvent dans le repertoire "diagrams".
 
