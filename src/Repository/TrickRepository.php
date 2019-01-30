@@ -27,7 +27,7 @@ class TrickRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->andWhere('t.id > :val')
             ->setParameter('val', 0)
-            ->orderBy('t.createdAt', 'DESC')
+            ->orderBy('t.updatedAt', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult()
