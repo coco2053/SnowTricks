@@ -67,7 +67,7 @@ class Trick
     private $trickImages;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick", cascade={"persist", "remove"})
      * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $comments;
@@ -80,6 +80,7 @@ class Trick
         $this->videos = new ArrayCollection();
         $this->trickImages = new ArrayCollection();
         $this->setCreatedAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
         $this->comments = new ArrayCollection();
     }
 

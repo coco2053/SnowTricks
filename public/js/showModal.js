@@ -1,3 +1,3 @@
-$('#centralModalSm').modal({
+$("#centralModalSm").modal({
     show: true
-})
+});

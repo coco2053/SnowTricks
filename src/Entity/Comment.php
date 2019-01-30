@@ -29,7 +29,7 @@ class Comment
     private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

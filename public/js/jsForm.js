@@ -10,4 +10,4 @@ $(".btn-add").on("click", function() {
 
 $("body").on("click", ".btn-remove", function() {
     $("."+$(this).data("rel")).remove();
-})
+});
