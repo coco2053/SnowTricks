@@ -41,7 +41,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(min="3", minMessage="Votre mot de passe doit contenir au moins 3 caracteres !")
+     * @Assert\Length(min="3", minMessage="Votre nom doit contenir au moins 3 caracteres !")
      */
     private $username;
 

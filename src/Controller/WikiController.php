@@ -3,10 +3,14 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TrickRepository;
 use App\Form\TrickType;
@@ -18,7 +22,41 @@ use App\Entity\TrickImage;
 class WikiController extends AbstractController
 {
     /**
-     * @Route("/{limit}", name="show_tricks", requirements={"limit"="\d+"})
+     * @Route("/figures/{offset}", name="tricks_ajax", requirements={"offset"="\d+"})
+     */
+    public function ajax(TrickRepository $repo, $offset) :Response
+    {
+        $encoders = [new JsonEncoder()];
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setCircularReferenceLimit(1);
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+
+        $normalizers = array($normalizer);
+        $serializer = new Serializer($normalizers, $encoders);
+        $tricks = $repo->findAllBy(4, $offset);
+
+        $tricksSer = $serializer->serialize($tricks, 'json', ['ignored_attributes' => ['content', 'createdAt', 'updatedAt', 'videos', 'comments', 'trickGroup']]);
+
+
+        $response = new Response();
+        $response->setContent($tricksSer);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/ajax", name="index_ajax")
+     */
+    public function ajaxIndex()
+    {
+        return $this->render('wiki/ajaxIndex.html.twig');
+    }
+
+    /**
+     * @Route("/{limit}", name="show_tricks")
      *
      * [Shows all tricks]
      * @param  TrickRepository $repo
@@ -27,21 +65,25 @@ class WikiController extends AbstractController
      */
     public function showTricks(TrickRepository $repo, $limit = 8)
     {
-        $tricks = $repo->findAllBy($limit);
-        $limit += 4;
-
-        if ($limit > 8) {
-            return $this->render('wiki/index.html.twig', [
-                'tricks' => $tricks,
-                'limit' => $limit,
-                'hash' => 'hash'
-            ]);
-        }
+        $tricks = $repo->findAllBy($limit, 0);
 
         return $this->render('wiki/index.html.twig', [
-            'tricks' => $tricks,
-            'limit' => $limit
+            'tricks' => $tricks
         ]);
+    }
+    /**
+     * @Route("/image/{id}", name="show_image")
+     *
+     * [Shows all tricks]
+     * @param  TrickRepository $repo
+     * @param  integer         $limit
+     * @return [render view]
+     */
+    public function showImage(TrickRepository $repo, $id)
+    {
+        $tricks = $repo->findAllByImage($id);
+
+        return $this->render('wiki/index.html.twig');
     }
 
     /**

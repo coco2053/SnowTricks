@@ -50,12 +50,6 @@ class Trick
     private $updatedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\TrickGroup", inversedBy="tricks")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $trickGroup;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="trick", cascade={"persist", "remove"})
      */
     private $videos;
@@ -71,6 +65,12 @@ class Trick
      * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $comments;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\TrickGroup")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $trickGroup;
 
     /**
      * [__construct]
@@ -135,18 +135,6 @@ class Trick
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getTrickGroup(): ?TrickGroup
-    {
-        return $this->trickGroup;
-    }
-
-    public function setTrickGroup(?TrickGroup $trickGroup): self
-    {
-        $this->trickGroup = $trickGroup;
 
         return $this;
     }
@@ -240,6 +228,18 @@ class Trick
                 $comment->setTrick(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTrickGroup(): ?TrickGroup
+    {
+        return $this->trickGroup;
+    }
+
+    public function setTrickGroup(?TrickGroup $trickGroup): self
+    {
+        $this->trickGroup = $trickGroup;
 
         return $this;
     }

@@ -22,18 +22,32 @@ class TrickRepository extends ServiceEntityRepository
     /**
      * @return Trick[] Returns an array of Trick objects
      */
-    public function findAllBy($limit)
+    public function findAllBy($limit, $offset)
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.id > :val')
             ->setParameter('val', 0)
             ->orderBy('t.updatedAt', 'DESC')
+            ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult()
         ;
     }
 
+    /**
+     * @return Trick[] Returns an array of Trick objects
+     */
+    public function findAllByImage($image)
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.trickImages', 'ti')
+            ->where('ti.id = :image')
+            ->setParameter('image', $image)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     /*
     public function findOneBySomeField($value): ?Trick

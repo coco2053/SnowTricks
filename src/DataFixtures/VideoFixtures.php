@@ -14,6 +14,7 @@ class VideoFixtures extends Fixture
    */
     public function load(ObjectManager $manager)
     {
+      /*
         // Create the videos
         $video = new Video();
         $video->setUrl('<iframe width="560" height="315" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
@@ -76,5 +77,6 @@ class VideoFixtures extends Fixture
         $manager->persist($video);
 
         $manager->flush();
+        */
     }
 }

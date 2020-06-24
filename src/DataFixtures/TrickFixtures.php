@@ -16,6 +16,7 @@ class TrickFixtures extends Fixture
      */
     public function load(ObjectManager $manager)
     {
+        /*
         // Create Fake Factory parametered to french
         $faker = \Faker\Factory::create('fr_FR');
 
@@ -51,5 +52,6 @@ class TrickFixtures extends Fixture
             }
         }
         $manager->flush();
+        */
     }
 }

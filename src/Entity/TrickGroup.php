@@ -24,11 +24,6 @@ class TrickGroup
     private $title;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="trickGroup")
-     */
-    private $tricks;
-
-    /**
      * [__construct]
      */
     public function __construct()
@@ -51,37 +46,6 @@ class TrickGroup
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Trick[]
-     */
-    public function getTricks(): Collection
-    {
-        return $this->tricks;
-    }
-
-    public function addTrick(Trick $trick): self
-    {
-        if (!$this->tricks->contains($trick)) {
-            $this->tricks[] = $trick;
-            $trick->setTrickGroup($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTrick(Trick $trick): self
-    {
-        if ($this->tricks->contains($trick)) {
-            $this->tricks->removeElement($trick);
-            // set the owning side to null (unless already changed)
-            if ($trick->getTrickGroup() === $this) {
-                $trick->setTrickGroup(null);
-            }
-        }
 
         return $this;
     }
